@@ -9,6 +9,8 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { fetchInvoicesPages } from '@/lib/data';
  
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Invoices',
 };

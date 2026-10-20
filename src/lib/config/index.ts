@@ -47,7 +47,7 @@ async function loadConfig(): Promise<AppConfig> {
   return {
     databaseUrl: getRequiredSecret(
       secrets,
-      "DATABASE_URL"
+      getRequiredEnv(process.env.DATABASE+"_URL")
     ),
 
     mongoUrl: getRequiredSecret(

@@ -220,8 +220,8 @@ stage('Configure Service') {
                     --name "%SERVICE_NAME%" ^
                     --description "%SERVICE_DESCRIPTION%" ^
                     --depends-on Vault ^
-                    --executable "%PNPM%" ^
-                    --args "start -- -p %PORT%" ^
+--executable "%PNPM%" ^
+--args "start -p %PORT%" ^
                     --env "NODE_ENV=production" ^
                     --env "PORT=%PORT%" ^
                     --env "BASE_PATH=%BASE_PATH%" ^

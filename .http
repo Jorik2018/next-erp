@@ -25,3 +25,7 @@ Content-Type: application/json
   "disclosureConsent": true,
   "privacyConsent": true
 }
+
+
+###
+get http://localhost:5000/graphql

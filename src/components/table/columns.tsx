@@ -1,6 +1,9 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import type {
+  ColumnDef,
+  StockFeatures,
+} from "@tanstack/react-table";
 import Image from "next/image";
 
 import { Doctors } from "@/constants";
@@ -10,7 +13,10 @@ import { Appointment } from "@/types/appwrite.types";
 import { AppointmentModal } from "../AppointmentModal";
 import { StatusBadge } from "../StatusBadge";
 
-export const columns: ColumnDef<Appointment>[] = [
+export const columns: ColumnDef<
+  StockFeatures,
+  Appointment
+>[] = [
   {
     header: "#",
     cell: ({ row }) => {

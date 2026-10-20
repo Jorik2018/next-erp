@@ -1,0 +1,38 @@
+import { renderPostComponent } from "../../helpers/post";
+import { ModalBackground, ModalPanel } from "../../Modal";
+import { Header, Body, Footer } from "../../Card";
+import { Button } from "../../Button";
+
+interface PostPreviewModalProp {
+  receipe: any[],
+  isShowing: bool,
+  hidePostPreviewModal:
+}
+
+/**
+ * @name PostPreviewModal
+ * @desc Show a final rendered components of the current receipe(currently editing in PostEditor)
+ * @prop isShowing : A state of this modal used to specify wether to show or hide this modal
+ * @prop receipe : A list of components that need to be rendered
+ * @prop hidePostPreviewModal : f() to hide this modal
+ */
+const PostPreviewModal = ({ receipe, isShowing, hidePostPreviewModal }: PostPreviewModalProp) => (
+  <ModalBackground $show={isShowing}>
+    <ModalPanel style={{ maxWidth: "1400px" }}>
+      <Header>พรีวิว</Header>
+      <Body style={{ paddingTop: "5em", paddingBottom: "5em" }}>
+        {renderPostComponent(receipe)}
+      </Body>
+      <Footer>
+        <Button $primary onClick={() => alert("Saving")}>
+          บันทึก
+        </Button>
+        <Button $light onClick={hidePostPreviewModal}>
+          ปิด
+        </Button>
+      </Footer>
+    </ModalPanel>
+  </ModalBackground>
+);
+
+export default PostPreviewModal;

@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { E164Number } from "libphonenumber-js/core";
 import Image from "next/image";
-import ReactDatePicker from "react-datepicker";
 import { Control } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
 
@@ -116,14 +115,24 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             className="ml-2"
           />
           <FormControl>
-            <ReactDatePicker
-              showTimeSelect={props.showTimeSelect ?? false}
-              selected={field.value}
-              onChange={(date: Date) => field.onChange(date)}
-              timeInputLabel="Time:"
-              dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
-              wrapperClassName="date-picker"
-            />
+<Input
+          type={props.showTimeSelect ? "datetime-local" : "date"}
+          value={
+            field.value
+              ? new Date(field.value).toISOString().slice(
+                  0,
+                  props.showTimeSelect ? 16 : 10
+                )
+              : ""
+          }
+          onChange={(e) =>
+            field.onChange(
+              e.target.value ? new Date(e.target.value) : undefined
+            )
+          }
+          className="shad-input border-0"
+          disabled={props.disabled}
+        />
           </FormControl>
         </div>
       );

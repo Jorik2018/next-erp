@@ -1,4 +1,4 @@
-import IndexPage from "@/core/pages";
+import IndexPage from "@/lib/pages";
 
 export default function Home() {
     return <IndexPage />

@@ -54,3 +54,26 @@ declare type UpdateAppointmentParams = {
   appointment: Appointment;
   type: string;
 };
+
+interface ClassroomMember {
+  _id: string
+  fname: string
+  profilePicture?: string
+}
+
+interface PostComment {
+  message: string;
+  creator: CommentCreator;
+  subComments: SubComment[];
+}
+
+interface CommentCreator {
+  _id: string;
+  fname: string;
+  profilePicture?: string | null;
+}
+
+interface SubComment {
+  message: string;
+  creator: CommentCreator;
+}

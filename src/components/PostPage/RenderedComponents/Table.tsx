@@ -1,0 +1,131 @@
+import type { ReactNode } from 'react'
+import styled from 'styled-components'
+
+const TableWrapper = styled.div`
+  width: 100%;
+  margin-top: 2em;
+
+  h1 {
+    color: ${({ theme }) => theme.PRIMARY_COLOR};
+    font-size: 1.3em;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 0;
+    display: block;
+  }
+
+  p {
+    display: block;
+    color: #777;
+    font-size: 0.8em;
+    font-weight: 400;
+    font-family: 'Calibri', sans-serif;
+    text-align: center;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  table {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin: 1em auto;
+
+    thead {
+      border: none;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+
+      th {
+        color: ${({ theme }) => theme.PRIMARY_COLOR};
+        font-size: 1em;
+        font-weight: 500;
+        text-align: center;
+        padding: 0.5em;
+      }
+    }
+
+    tbody {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+
+      tr {
+        color: #777;
+        font-weight: 300;
+        font-family: 'Calibri', sans-serif;
+
+        &:hover {
+          box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+          color: ${({ theme }) => theme.PRIMARY_COLOR};
+        }
+
+        td {
+          padding: 0.7em 0.5em;
+          text-align: center;
+        }
+      }
+    }
+  }
+`
+
+interface TableItem {
+  data: ReactNode
+}
+
+interface TableRow {
+  items: TableItem[]
+}
+
+interface TableProps {
+  children?: ReactNode
+  head?: string[]
+  body?: TableRow[]
+  description?: string
+  name?: string
+}
+
+/**
+ * @name Table
+ * @desc Display data as a grid
+ */
+const Table = ({
+  children,
+  head = [],
+  body = [],
+  description,
+  name
+}: TableProps) => (
+  <TableWrapper>
+    {name && <h1>{name}</h1>}
+    {description && <p>{description}</p>}
+
+    <table>
+      {children ?? (
+        <>
+          <thead>
+            <tr>
+              {head.map((columnName, i) => (
+                <th key={i}>{columnName}</th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {body.map((dataRow, i) => (
+              <tr key={i}>
+                {dataRow.items.map((item, j) => (
+                  <td key={j}>{item.data}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </>
+      )}
+    </table>
+  </TableWrapper>
+)
+
+export default Table

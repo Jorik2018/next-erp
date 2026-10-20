@@ -199,44 +199,44 @@ stage('Build Application') {
         // 7. Configure Windows service
         // ============================================================
 
-        stage('Configure Service') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'VAULT_TOKEN',
-                        variable: 'VAULT_TOKEN'
-                    )
-                ]) {
-                    bat '''
-                        echo ==========================================
-                        echo Configuring Next ERP Windows service
-                        echo ==========================================
+stage('Configure Service') {
+    steps {
+        withCredentials([
+            string(
+                credentialsId: 'VAULT_TOKEN',
+                variable: 'VAULT_TOKEN'
+            )
+        ]) {
+            bat '''
+                echo ==========================================
+                echo Configuring Next ERP Windows service
+                echo ==========================================
 
-                        "%PYTHON_HOME%\\python.exe" ^
-                            "%SERVICE_MANAGER%" ^
-                            install ^
-                            "%SERVICE_ID%" ^
-                            "%DEPLOY_DIR%" ^
-                            --name "%SERVICE_NAME%" ^
-                            --description "%SERVICE_DESCRIPTION%" ^
-                            --depends-on Vault ^
-                            --executable "C:\\Windows\\System32\\cmd.exe" ^
-                            --args "/C pnpm start -- -p %PORT%" ^
-                            --env "NODE_ENV=production" ^
-                            --env "PORT=%PORT%" ^
-                            --env "BASE_PATH=%BASE_PATH%" ^
-                            --env "VAULT_ADDR=%VAULT_ADDR%" ^
-                            --env "VAULT_PATH=%VAULT_PATH%" ^
-                            --env "VAULT_TOKEN=%VAULT_TOKEN%"
+                "%PYTHON_HOME%\\python.exe" ^
+                    "%SERVICE_MANAGER%" ^
+                    install ^
+                    "%SERVICE_ID%" ^
+                    "%DEPLOY_DIR%" ^
+                    --name "%SERVICE_NAME%" ^
+                    --description "%SERVICE_DESCRIPTION%" ^
+                    --depends-on Vault ^
+                    --executable "%PNPM%" ^
+                    --args "start -- -p %PORT%" ^
+                    --env "NODE_ENV=production" ^
+                    --env "PORT=%PORT%" ^
+                    --env "BASE_PATH=%BASE_PATH%" ^
+                    --env "VAULT_ADDR=%VAULT_ADDR%" ^
+                    --env "VAULT_PATH=%VAULT_PATH%" ^
+                    --env "VAULT_TOKEN=%VAULT_TOKEN%"
 
-                        if errorlevel 1 (
-                            echo ERROR: Service configuration failed.
-                            exit /B 1
-                        )
-                    '''
-                }
-            }
+                if errorlevel 1 (
+                    echo ERROR: Service configuration failed.
+                    exit /B 1
+                )
+            '''
         }
+    }
+}
 
         stage('Start Service') {
             steps {

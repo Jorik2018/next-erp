@@ -293,55 +293,43 @@ stage('Configure Service') {
             }
         }
 
-        stage('Health Check') {
-            steps {
-                powershell '''
-                    # Internal Next.js endpoint.
-                    #
-                    # Nginx:
-                    #   /next/... -> 127.0.0.1:7785/next/...
-                    #
-                    # Since Next.js is configured with basePath=/next,
-                    # the internal request includes /next.
+stage('Health Check') {
+    steps {
+        powershell '''
+            $url = "http://127.0.0.1:$env:PORT$env:BASE_PATH"
 
-                    $url = "http://127.0.0.1:$env:PORT$env:BASE_PATH/"
+            $maxAttempts = 10
 
-                    $maxAttempts = 10
+            for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
 
-                    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+                Write-Host "Health check $attempt/$maxAttempts"
+                Write-Host $url
 
-                        Write-Host "Health check $attempt/$maxAttempts"
-                        Write-Host $url
+                try {
+                    $response = Invoke-WebRequest `
+                        -UseBasicParsing `
+                        -Uri $url `
+                        -TimeoutSec 5
 
-                        try {
-
-                            $response = Invoke-WebRequest `
-                                -UseBasicParsing `
-                                -Uri $url `
-                                -TimeoutSec 5
-
-                            if ($response.StatusCode -eq 200) {
-
-                                Write-Host "Next ERP OK"
-
-                                exit 0
-                            }
-
-                            Write-Host "HTTP status: $($response.StatusCode)"
-                        }
-                        catch {
-
-                            Write-Host "Next ERP not available yet."
-                            Write-Host $_.Exception.Message
-                        }
-
-                        Start-Sleep -Seconds 3
+                    if ($response.StatusCode -eq 200) {
+                        Write-Host "Next ERP OK"
+                        exit 0
                     }
 
-                    throw "Next ERP did not respond to health check."
-                '''
+                    Write-Host "HTTP status: $($response.StatusCode)"
+                }
+                catch {
+                    Write-Host "Next ERP not available yet."
+                    Write-Host $_.Exception.Message
+                }
+
+                Start-Sleep -Seconds 3
             }
-        }
+
+            throw "Next ERP did not respond to health check."
+        '''
+    }
+}
     }
 
     post {

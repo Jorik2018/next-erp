@@ -13,7 +13,7 @@ environment {
 
     DEPLOY_DIR = 'D:\\apps\\next-erp'
 
-    PORT = '7785'
+    PORT = '7787'
     BASE_PATH = '/next'
 
     VAULT_PATH = '/global'

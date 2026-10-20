@@ -6,11 +6,6 @@ import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.actions";
 
-/**
- * This page requires runtime services such as
- * Vault and Appwrite, so it must not be
- * prerendered during `next build`.
- */
 export const dynamic = "force-dynamic";
 
 const AdminPage = async () => {

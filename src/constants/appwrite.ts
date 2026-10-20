@@ -1,5 +1,5 @@
 export const APPWRITE = {
-  DATABASE_ID: "next-erp",
+  DATABASE_ID: process.env.APPWRITE_DATABASE_ID!,
 
   TABLES: {
     PATIENTS: "patients",

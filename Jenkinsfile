@@ -19,6 +19,7 @@ environment {
     VAULT_PATH = '/global'
 
     PNPM = 'D:\\tools\\pnpm\\pnpm.exe'
+    APPWRITE_DATABASE_ID = '6ad7bdf00025763c0c20'
 }
 
     stages {
@@ -226,6 +227,7 @@ stage('Configure Service') {
                     --env "PORT=%PORT%" ^
                     --env "BASE_PATH=%BASE_PATH%" ^
                     --env "VAULT_ADDR=%VAULT_ADDR%" ^
+                    --env "APPWRITE_APPOINTMENTS_ID=%APPWRITE_APPOINTMENTS_ID%" ^
                     --env "VAULT_PATH=%VAULT_PATH%" ^
                     --env "VAULT_TOKEN=%VAULT_TOKEN%"
 

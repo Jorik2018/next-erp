@@ -3,46 +3,78 @@ import { getVaultSecret } from "@/lib/vault/client";
 export interface AppConfig {
   databaseUrl: string;
   mongoUrl: string;
-  jwtPublicKeyLocation?: string;
-  redisUrl?: string;
+  redisUrl: string;
+
+  appwrite: {
+    endpoint: string;
+    projectId: string;
+    apiKey: string;
+  };
 }
 
-let config: AppConfig | null = null;
+let configPromise: Promise<AppConfig> | null = null;
 
-export async function getConfig(): Promise<AppConfig> {
-  if (config) {
-    return config;
+export function getConfig(): Promise<AppConfig> {
+  if (!configPromise) {
+    configPromise = loadConfig().catch((error) => {
+      configPromise = null;
+      throw error;
+    });
   }
 
-  if (process.env.NODE_ENV === "development") {
-    config = {
-      databaseUrl: getRequiredEnv("DATABASE_URL"),
-      mongoUrl: getRequiredEnv("MONGODB_URI"),
-      jwtPublicKeyLocation:
-        process.env.JWT_PUBLIC_KEY_LOCATION,
-      redisUrl: process.env.REDIS_URL,
-    };
+  return configPromise;
+}
 
-    return config;
+async function loadConfig(): Promise<AppConfig> {
+  if (process.env.NODE_ENV === "development") {
+    return {
+      databaseUrl: getRequiredEnv("DATABASE_URL"),
+      mongoUrl: getRequiredEnv("MONGODB_URL"),
+      redisUrl: getRequiredEnv("REDIS_URL"),
+
+      appwrite: {
+        endpoint: getRequiredEnv("APPWRITE_ENDPOINT"),
+        projectId: getRequiredEnv("APPWRITE_PROJECT_ID"),
+        apiKey: getRequiredEnv("APPWRITE_API_KEY"),
+      },
+    };
   }
 
   const secrets = await getVaultSecret("global");
 
-  config = {
+  return {
     databaseUrl: getRequiredSecret(
       secrets,
       "DATABASE_URL"
     ),
+
     mongoUrl: getRequiredSecret(
       secrets,
-      "MONGODB_URI"
+      "MONGODB_URL"
     ),
-    jwtPublicKeyLocation:
-      secrets.JWT_PUBLIC_KEY_LOCATION,
-    redisUrl: secrets.REDIS_URL,
-  };
 
-  return config;
+    redisUrl: getRequiredSecret(
+      secrets,
+      "REDIS_URL"
+    ),
+
+    appwrite: {
+      endpoint: getRequiredSecret(
+        secrets,
+        "APPWRITE_ENDPOINT"
+      ),
+
+      projectId: getRequiredSecret(
+        secrets,
+        "APPWRITE_PROJECT_ID"
+      ),
+
+      apiKey: getRequiredSecret(
+        secrets,
+        "APPWRITE_API_KEY"
+      ),
+    },
+  };
 }
 
 function getRequiredEnv(name: string): string {
@@ -50,7 +82,7 @@ function getRequiredEnv(name: string): string {
 
   if (!value) {
     throw new Error(
-      `Environment variable ${name} is required`
+      `Missing environment variable: ${name}`
     );
   }
 
@@ -65,7 +97,7 @@ function getRequiredSecret(
 
   if (!value) {
     throw new Error(
-      `Vault secret ${name} is required`
+      `Missing Vault secret: ${name}`
     );
   }
 

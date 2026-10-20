@@ -2,23 +2,22 @@
 
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
-import {
-  BUCKET_ID,
-  DATABASE_ID,
-  ENDPOINT,
-  PATIENT_COLLECTION_ID,
-  PROJECT_ID,
-  storage,
-  tablesDB,
-  users,
-} from "../appwrite.config";
-import { parseStringify } from "../utils";
 
-// CREATE APPWRITE USER
-export const createUser = async (user: CreateUserParams) => {
+import { APPWRITE } from "@/constants/appwrite";
+import { getAppwrite } from "@/lib/appwrite/server";
+import { parseStringify } from "@/lib/utils";
+
+/* -------------------------------------------------------------------------- */
+/*                              Create Appwrite User                          */
+/* -------------------------------------------------------------------------- */
+
+export const createUser = async (
+  user: CreateUserParams
+) => {
+  const { users } = await getAppwrite();
+
   try {
-    // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
-    const newuser = await users.create(
+    const newUser = await users.create(
       ID.unique(),
       user.email,
       user.phone,
@@ -26,24 +25,48 @@ export const createUser = async (user: CreateUserParams) => {
       user.name
     );
 
-    return parseStringify(newuser);
-  } catch (error: any) {
-    // Check existing user
-    if (error && error?.code === 409) {
-      const existingUser = await users.list([
-        Query.equal("email", [user.email]),
-      ]);
+    return parseStringify(newUser);
+  } catch (error: unknown) {
+    if (
+      isAppwriteConflictError(error)
+    ) {
+      const existingUsers =
+        await users.list({
+          queries: [
+            Query.equal(
+              "email",
+              [user.email]
+            ),
+          ],
+        });
 
-      return existingUser.users[0];
+      return parseStringify(
+        existingUsers.users[0]
+      );
     }
-    console.error("An error occurred while creating a new user:", error);
+
+    console.error(
+      "An error occurred while creating a new user:",
+      error
+    );
+
+    throw error;
   }
 };
 
-// GET USER
-export const getUser = async (userId: string) => {
+/* -------------------------------------------------------------------------- */
+/*                                  Get User                                  */
+/* -------------------------------------------------------------------------- */
+
+export const getUser = async (
+  userId: string
+) => {
   try {
-    const user = await users.get(userId);
+    const { users } =
+      await getAppwrite();
+
+    const user =
+      await users.get(userId);
 
     return parseStringify(user);
   } catch (error) {
@@ -51,63 +74,184 @@ export const getUser = async (userId: string) => {
       "An error occurred while retrieving the user details:",
       error
     );
+
+    throw error;
   }
 };
 
-// REGISTER PATIENT
+/* -------------------------------------------------------------------------- */
+/*                              Register Patient                              */
+/* -------------------------------------------------------------------------- */
+
 export const registerPatient = async ({
   identificationDocument,
   ...patient
 }: RegisterUserParams) => {
   try {
-    // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
-    let file;
+    const {
+      storage,
+      tablesDB,
+      endpoint,
+      projectId,
+    } = await getAppwrite();
+
+    let identificationDocumentId:
+      | string
+      | null = null;
+
     if (identificationDocument) {
-      const inputFile = InputFile.fromBuffer(
-        Buffer.from(await (identificationDocument.get("blobFile") as Blob).arrayBuffer()),
-        identificationDocument.get("fileName") as string
-      );
-      file = await storage.createFile({
-        bucketId: BUCKET_ID!,
-        fileId: ID.unique(),
-        file: inputFile,
-      });
+      const blobFile =
+        identificationDocument.get(
+          "blobFile"
+        );
+
+      const fileName =
+        identificationDocument.get(
+          "fileName"
+        );
+
+      if (
+        blobFile instanceof Blob &&
+        typeof fileName === "string"
+      ) {
+        const inputFile =
+          InputFile.fromBuffer(
+            Buffer.from(
+              await blobFile.arrayBuffer()
+            ),
+            fileName
+          );
+
+        const uploadedFile =
+          await storage.createFile({
+            bucketId:
+              APPWRITE.BUCKETS
+                .PATIENT_DOCUMENTS,
+
+            fileId: ID.unique(),
+
+            file: inputFile,
+          });
+
+        identificationDocumentId =
+          uploadedFile.$id;
+      }
     }
 
-    // Create new patient document -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#createDocument
-    const newPatient = await tablesDB.createRow({
-      databaseId: DATABASE_ID!,
-      tableId: PATIENT_COLLECTION_ID!,
-      rowId: ID.unique(),
-      data: {
-        identificationDocumentId: file?.$id ?? null,
-        identificationDocumentUrl: file?.$id
-          ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view?project=${PROJECT_ID}`
-          : null,
-        ...patient,
-      },
-    });
+    const identificationDocumentUrl =
+      identificationDocumentId
+        ? buildDocumentUrl({
+            endpoint,
+            projectId,
+            fileId:
+              identificationDocumentId,
+          })
+        : null;
 
-    return parseStringify(newPatient);
+    const newPatient =
+      await tablesDB.createRow({
+        databaseId:
+          APPWRITE.DATABASE_ID,
+
+        tableId:
+          APPWRITE.TABLES.PATIENTS,
+
+        rowId: ID.unique(),
+
+        data: {
+          ...patient,
+
+          identificationDocumentId,
+
+          identificationDocumentUrl,
+        },
+      });
+
+    return parseStringify(
+      newPatient
+    );
   } catch (error) {
-    console.error("An error occurred while creating a new patient:", error);
+    console.error(
+      "An error occurred while creating a new patient:",
+      error
+    );
+
+    throw error;
   }
 };
 
-// GET PATIENT
-export const getPatient = async (userId: string) => {
-  try {
-    const patients = await tablesDB.listRows({
-      databaseId: DATABASE_ID!,
-      tableId: PATIENT_COLLECTION_ID!,
-      queries: [Query.equal("userId", [userId])],
-    });
+/* -------------------------------------------------------------------------- */
+/*                                Get Patient                                 */
+/* -------------------------------------------------------------------------- */
 
-    return parseStringify(patients.rows[0]);
+export const getPatient = async (
+  userId: string
+) => {
+  try {
+    const { tablesDB } =
+      await getAppwrite();
+
+    const patients =
+      await tablesDB.listRows({
+        databaseId:
+          APPWRITE.DATABASE_ID,
+
+        tableId:
+          APPWRITE.TABLES.PATIENTS,
+
+        queries: [
+          Query.equal(
+            "userId",
+            [userId]
+          ),
+        ],
+      });
+
+    return parseStringify(
+      patients.rows[0] ?? null
+    );
   } catch (error) {
     console.error(
       "An error occurred while retrieving the patient details:",
       error
     );
+
+    throw error;
   }
 };
+
+/* -------------------------------------------------------------------------- */
+/*                                  Helpers                                   */
+/* -------------------------------------------------------------------------- */
+
+function buildDocumentUrl({
+  endpoint,
+  projectId,
+  fileId,
+}: {
+  endpoint: string;
+  projectId: string;
+  fileId: string;
+}) {
+  const bucketId =
+    APPWRITE.BUCKETS.PATIENT_DOCUMENTS;
+
+  return (
+    `${endpoint}/storage/buckets/` +
+    `${bucketId}/files/` +
+    `${fileId}/view` +
+    `?project=${encodeURIComponent(projectId)}`
+  );
+}
+
+function isAppwriteConflictError(
+  error: unknown
+): error is { code: number } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown })
+      .code === 409
+  );
+}

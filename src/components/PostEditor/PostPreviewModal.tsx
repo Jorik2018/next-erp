@@ -1,34 +1,68 @@
-import { renderPostComponent } from "../../helpers/post";
-import { ModalBackground, ModalPanel } from "../../Modal";
-import { Header, Body, Footer } from "../../Card";
-import { Button } from "../../Button";
+import {
+  renderPostComponent,
+  type PostComponent,
+} from "@/helpers/post";
 
-interface PostPreviewModalProp {
-  receipe: any[],
-  isShowing: bool,
-  hidePostPreviewModal:
+import {
+  ModalBackground,
+  ModalPanel,
+} from "@/components/Modal";
+
+import {
+  Header,
+  Body,
+  Footer,
+} from "@/components/Card";
+
+import { Button } from "@/components/Button";
+
+interface PostPreviewModalProps {
+  receipe: PostComponent[];
+  isShowing: boolean;
+  hidePostPreviewModal: () => void;
 }
 
 /**
  * @name PostPreviewModal
- * @desc Show a final rendered components of the current receipe(currently editing in PostEditor)
- * @prop isShowing : A state of this modal used to specify wether to show or hide this modal
- * @prop receipe : A list of components that need to be rendered
- * @prop hidePostPreviewModal : f() to hide this modal
+ * @desc Displays a preview of the post currently being edited.
  */
-const PostPreviewModal = ({ receipe, isShowing, hidePostPreviewModal }: PostPreviewModalProp) => (
+const PostPreviewModal = ({
+  receipe,
+  isShowing,
+  hidePostPreviewModal,
+}: PostPreviewModalProps) => (
   <ModalBackground $show={isShowing}>
-    <ModalPanel style={{ maxWidth: "1400px" }}>
-      <Header>พรีวิว</Header>
-      <Body style={{ paddingTop: "5em", paddingBottom: "5em" }}>
+    <ModalPanel
+      style={{
+        maxWidth: "1400px",
+      }}
+    >
+      <Header>Preview</Header>
+
+      <Body
+        style={{
+          paddingTop: "5em",
+          paddingBottom: "5em",
+        }}
+      >
         {renderPostComponent(receipe)}
       </Body>
+
       <Footer>
-        <Button $primary onClick={() => alert("Saving")}>
-          บันทึก
+        <Button
+          variant="primary"
+          type="button"
+          onClick={() => alert("Saving")}
+        >
+          Save
         </Button>
-        <Button $light onClick={hidePostPreviewModal}>
-          ปิด
+
+        <Button
+          variant="light"
+          type="button"
+          onClick={hidePostPreviewModal}
+        >
+          Close
         </Button>
       </Footer>
     </ModalPanel>

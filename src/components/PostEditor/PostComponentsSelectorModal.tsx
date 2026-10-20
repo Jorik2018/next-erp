@@ -1,7 +1,9 @@
-import { ModalBackground, ModalPanel } from '../../Modal'
+
+import { Button } from '../Button'
+import { Body, Footer, Header } from '../Card'
+import { ModalBackground, ModalPanel } from '../Modal'
 import PostComponentItem from './PostComponentItem'
-import { Header, Body, Footer } from '../../Card'
-import { Button } from '../../Button'
+
 
 import {
   SUB_HEADING,
@@ -14,7 +16,7 @@ import {
   VIDEO,
   LIST,
   MAP
-} from '../../../constants/post-content/components'
+} from '@/constants/post-content/components'
 
 const components = [
   { type: HEADING, name: 'Heading' },

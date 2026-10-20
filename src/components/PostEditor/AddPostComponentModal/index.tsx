@@ -1,5 +1,6 @@
+import { ModalBackground, ModalPanel } from '@/components/Modal'
 import AddPostComponentDetailForm from './AddPostComponentDetailForm'
-import { ModalBackground, ModalPanel } from '../../../Modal'
+
 
 import {
   SUB_HEADING,
@@ -12,7 +13,7 @@ import {
   VIDEO,
   LIST,
   MAP
-} from '../../../../constants/post-content/components'
+} from '@/constants/post-content/components'
 
 type PostComponentType =
   | typeof HEADING

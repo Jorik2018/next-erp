@@ -8,8 +8,8 @@ import UserTitle from './UserTitle'
  */
 const JoinRequestPanel = () => (
   <FullContainerCard
-    marginTop="1em"
-    marginBottom="7em"
+    $marginTop="1em"
+    $marginBottom="7em"
     header="คำขอเข้าร่วม"
   >
     {Array.from({ length: 8 }).map((_, index) => (

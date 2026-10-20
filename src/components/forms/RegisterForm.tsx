@@ -26,12 +26,23 @@ import CustomFormField, { FormFieldType } from "../CustomFormField";
 import { FileUploader } from "../FileUploader";
 import SubmitButton from "../SubmitButton";
 
+type PatientFormInput =
+  z.input<typeof PatientFormValidation>;
+
+type PatientFormOutput =
+  z.output<typeof PatientFormValidation>;
+
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof PatientFormValidation>>({
+  const form = useForm<
+    PatientFormInput,
+    unknown,
+    PatientFormOutput
+  >({
     resolver: zodResolver(PatientFormValidation),
+
     defaultValues: {
       ...PatientFormDefaultValues,
       name: user.name,
@@ -40,63 +51,101 @@ const RegisterForm = ({ user }: { user: User }) => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
+  const onSubmit = async (
+    values: PatientFormOutput
+  ) => {
     setIsLoading(true);
 
-    // Store file info in form data as
-    let formData;
-    if (
-      values.identificationDocument &&
-      values.identificationDocument?.length > 0
-    ) {
-      const blobFile = new Blob([values.identificationDocument[0]], {
-        type: values.identificationDocument[0].type,
-      });
-
-      formData = new FormData();
-      formData.append("blobFile", blobFile);
-      formData.append("fileName", values.identificationDocument[0].name);
-    }
-
     try {
+      let formData: FormData | undefined;
+
+      const identificationFile =
+        values.identificationDocument?.[0];
+
+      if (identificationFile) {
+        formData = new FormData();
+
+        formData.append(
+          "blobFile",
+          identificationFile
+        );
+
+        formData.append(
+          "fileName",
+          identificationFile.name
+        );
+      }
+
       const patient = {
         userId: user.$id,
         name: values.name,
         email: values.email,
         phone: values.phone,
-        birthDate: new Date(values.birthDate),
+
+        birthDate: new Date(
+          values.birthDate
+        ),
+
         gender: values.gender,
         address: values.address,
         occupation: values.occupation,
-        emergencyContactName: values.emergencyContactName,
-        emergencyContactNumber: values.emergencyContactNumber,
-        primaryPhysician: values.primaryPhysician,
-        insuranceProvider: values.insuranceProvider,
-        insurancePolicyNumber: values.insurancePolicyNumber,
+
+        emergencyContactName:
+          values.emergencyContactName,
+
+        emergencyContactNumber:
+          values.emergencyContactNumber,
+
+        primaryPhysician:
+          values.primaryPhysician,
+
+        insuranceProvider:
+          values.insuranceProvider,
+
+        insurancePolicyNumber:
+          values.insurancePolicyNumber,
+
         allergies: values.allergies,
-        currentMedication: values.currentMedication,
-        familyMedicalHistory: values.familyMedicalHistory,
-        pastMedicalHistory: values.pastMedicalHistory,
-        identificationType: values.identificationType,
-        identificationNumber: values.identificationNumber,
-        identificationDocument: values.identificationDocument
-          ? formData
-          : undefined,
-        privacyConsent: values.privacyConsent,
+
+        currentMedication:
+          values.currentMedication,
+
+        familyMedicalHistory:
+          values.familyMedicalHistory,
+
+        pastMedicalHistory:
+          values.pastMedicalHistory,
+
+        identificationType:
+          values.identificationType,
+
+        identificationNumber:
+          values.identificationNumber,
+
+        identificationDocument:
+          formData,
+
+        privacyConsent:
+          values.privacyConsent,
       };
 
-      const newPatient = await registerPatient(patient);
+      const newPatient =
+        await registerPatient(patient);
 
       if (newPatient) {
-        router.push(`/patients/${user.$id}/new-appointment`);
+        router.push(
+          `/patients/${user.$id}/new-appointment`
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.error(
+        "Unable to register patient:",
+        error
+      );
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
-
   return (
     <Form {...form}>
       <form
@@ -112,9 +161,6 @@ const RegisterForm = ({ user }: { user: User }) => {
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Personal Information</h2>
           </div>
-
-          {/* NAME */}
-
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -123,7 +169,6 @@ const RegisterForm = ({ user }: { user: User }) => {
             iconSrc="/assets/icons/user.svg"
             iconAlt="user"
           />
-
           {/* EMAIL & PHONE */}
           <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
@@ -164,12 +209,26 @@ const RegisterForm = ({ user }: { user: User }) => {
                   <RadioGroup
                     className="flex h-11 gap-6 xl:justify-between"
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={
+                      typeof field.value === "string"
+                        ? field.value
+                        : undefined
+                    }
                   >
-                    {GenderOptions.map((option, i) => (
-                      <div key={option + i} className="radio-group">
-                        <RadioGroupItem value={option} id={option} />
-                        <Label htmlFor={option} className="cursor-pointer">
+                    {GenderOptions.map((option) => (
+                      <div
+                        key={option}
+                        className="radio-group"
+                      >
+                        <RadioGroupItem
+                          value={option}
+                          id={option}
+                        />
+
+                        <Label
+                          htmlFor={option}
+                          className="cursor-pointer"
+                        >
                           {option}
                         </Label>
                       </div>

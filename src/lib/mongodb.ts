@@ -1,10 +1,10 @@
 // src/lib/mongodb.ts
 import { MongoClient } from 'mongodb'
 
-const uri = process.env.MONGODB_URI
+const uri = process.env.MONGODB_URL
 
 if (!uri) {
-  throw new Error('Missing MONGODB_URI')
+  throw new Error('Missing MONGODB_URL')
 }
 
 let client: MongoClient

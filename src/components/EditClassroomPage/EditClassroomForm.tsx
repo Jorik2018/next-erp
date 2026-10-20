@@ -2,9 +2,9 @@
 
 import { useForm } from 'react-hook-form'
 
-import { InputField, TextAreaField } from '../../Form'
 import Card, { Header, Body } from '../Card'
 import { Button } from '../Button'
+import { InputField, TextAreaField } from '../Form'
 
 interface EditClassroomFormValues {
   name: string

@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import type { ReactNode } from 'react'
 
-import { CircleButton } from '../../../Button'
-import { PostComponentType } from '@/app/core/helpers/post'
+import { PostComponentType } from '@/helpers/post'
+import { CircleButton } from '@/components/Button'
 
 const TestComponentWrapper = styled.div`
   position: relative;

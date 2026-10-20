@@ -1,3 +1,15 @@
-import { handler } from '@/api/graphql/next-handler'
+import type { NextRequest } from "next/server";
 
-export { handler as GET, handler as POST }
+import { handler } from "@/api/graphql/next-handler";
+
+export async function GET(
+  request: NextRequest
+): Promise<Response> {
+  return handler(request);
+}
+
+export async function POST(
+  request: NextRequest
+): Promise<Response> {
+  return handler(request);
+}

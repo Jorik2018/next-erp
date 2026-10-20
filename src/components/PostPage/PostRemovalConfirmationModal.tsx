@@ -3,11 +3,10 @@
 import { gql } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
 import { useRouter } from 'next/navigation'
-
-import { DASHBOARD_PAGE } from '../../../constants/endpoints/ui'
-import { ModalBackground, ModalPanel } from '../../Modal'
 import { Header, Body, Footer } from '../Card'
 import { Button } from '../Button'
+import { DASHBOARD_PAGE } from '@/constants/endpoints/ui'
+import { ModalBackground, ModalPanel } from '../Modal'
 
 interface PostRemovalConfirmationModalProps {
   isPostRMModalShowing: boolean

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { EDIT_POST_PAGE } from "../../../constants/endpoints/ui";
 import ActivityPanel from "../ActivityPanel";
+import { EDIT_POST_PAGE } from "@/constants/endpoints/ui";
 
 interface PostActivityPanelProp {
   showPostRMModal: any

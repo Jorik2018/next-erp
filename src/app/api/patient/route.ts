@@ -1,70 +1,120 @@
-// app/api/patient/route.ts
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
-import { NextRequest, NextResponse } from "next/server";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 
-import {
-  BUCKET_ID,
-  DATABASE_ID,
-  ENDPOINT,
-  PATIENT_COLLECTION_ID,
-  PROJECT_ID,
-  storage,
-  tablesDB,
-} from "@/lib/appwrite.config";
+import { getAppwrite } from "@/lib/appwrite/server";
+import { APPWRITE } from "@/constants/appwrite";
 
-// POST /api/patient
-export async function POST(req: NextRequest) {
+type PatientData = Record<
+  string,
+  FormDataEntryValue | unknown
+>;
+
+/**
+ * POST /api/patient
+ *
+ * Creates a patient and optionally uploads
+ * an identification document.
+ */
+export async function POST(
+  req: NextRequest
+) {
   try {
-    const contentType = req.headers.get("content-type") || "";
+    const {
+      storage,
+      tablesDB,
+      endpoint,
+      projectId,
+    } = await getAppwrite();
 
-    let patientData: any = {};
-    let file;
+    const contentType =
+      req.headers.get("content-type") ?? "";
 
-    // =========================
-    // MULTIPART FORM DATA
-    // =========================
-    if (contentType.includes("multipart/form-data")) {
+    let patientData: PatientData = {};
+    let identificationDocumentId:
+      | string
+      | null = null;
+
+    // ============================================================
+    // Multipart FormData
+    // ============================================================
+
+    if (
+      contentType.includes(
+        "multipart/form-data"
+      )
+    ) {
       const formData = await req.formData();
 
-      const blobFile = formData.get("blobFile") as Blob | null;
-      const fileName = formData.get("fileName") as string | null;
+      const blobFile =
+        formData.get("blobFile");
 
-      if (blobFile && fileName) {
-        const inputFile = InputFile.fromBuffer(
-          Buffer.from(await blobFile.arrayBuffer()),
-          fileName
-        );
+      const fileName =
+        formData.get("fileName");
 
-        file = await storage.createFile({
-          bucketId: BUCKET_ID!,
-          fileId: ID.unique(),
-          file: inputFile,
-        });
+      if (
+        blobFile instanceof Blob &&
+        typeof fileName === "string" &&
+        fileName.length > 0
+      ) {
+        const inputFile =
+          InputFile.fromBuffer(
+            Buffer.from(
+              await blobFile.arrayBuffer()
+            ),
+            fileName
+          );
+
+        const uploadedFile =
+          await storage.createFile({
+            bucketId:
+              APPWRITE.BUCKETS
+                .PATIENT_DOCUMENTS,
+
+            fileId: ID.unique(),
+
+            file: inputFile,
+          });
+
+        identificationDocumentId =
+          uploadedFile.$id;
       }
 
-      patientData = Object.fromEntries(formData.entries());
+      patientData =
+        Object.fromEntries(
+          formData.entries()
+        );
 
       delete patientData.blobFile;
       delete patientData.fileName;
     }
 
-    // =========================
+    // ============================================================
     // JSON
-    // =========================
-    else if (contentType.includes("application/json")) {
-      patientData = await req.json();
+    // ============================================================
+
+    else if (
+      contentType.includes(
+        "application/json"
+      )
+    ) {
+      patientData =
+        (await req.json()) as PatientData;
     }
 
-    // =========================
-    // INVALID CONTENT TYPE
-    // =========================
+    // ============================================================
+    // Unsupported content type
+    // ============================================================
+
     else {
       return NextResponse.json(
         {
           error:
-            "Unsupported content-type. Use application/json or multipart/form-data",
+            "Unsupported content-type. Use application/json or multipart/form-data.",
         },
         {
           status: 415,
@@ -72,31 +122,59 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // =========================
-    // CREATE PATIENT
-    // =========================
-    const newPatient = await tablesDB.createRow({
-      databaseId: DATABASE_ID!,
-      tableId: PATIENT_COLLECTION_ID!,
-      rowId: ID.unique(),
-      data: {
-        identificationDocumentId: file?.$id ?? null,
-        identificationDocumentUrl: file?.$id
-          ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view?project=${PROJECT_ID}`
-          : null,
-        ...patientData,
-      },
-    });
+    // ============================================================
+    // Identification document URL
+    // ============================================================
 
-    return NextResponse.json(newPatient, {
-      status: 201,
-    });
+    const identificationDocumentUrl =
+      identificationDocumentId
+        ? buildDocumentUrl({
+            endpoint,
+            projectId,
+            fileId:
+              identificationDocumentId,
+          })
+        : null;
+
+    // ============================================================
+    // Create patient
+    // ============================================================
+
+    const newPatient =
+      await tablesDB.createRow({
+        databaseId:
+          APPWRITE.DATABASE_ID,
+
+        tableId:
+          APPWRITE.TABLES.PATIENTS,
+
+        rowId: ID.unique(),
+
+        data: {
+          ...patientData,
+
+          identificationDocumentId,
+
+          identificationDocumentUrl,
+        },
+      });
+
+    return NextResponse.json(
+      newPatient,
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
-    console.error("Error creating patient:", error);
+    console.error(
+      "Error creating patient:",
+      error
+    );
 
     return NextResponse.json(
       {
-        error: "Error creating patient",
+        error:
+          "Error creating patient",
       },
       {
         status: 500,
@@ -104,31 +182,93 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-// GET /api/patient?userId=xxx
-export async function GET(req: NextRequest) {
+
+/**
+ * GET /api/patient?userId=xxx
+ *
+ * Returns the patient associated with
+ * the supplied application user.
+ */
+export async function GET(
+  req: NextRequest
+) {
   try {
-    const userId = req.nextUrl.searchParams.get("userId");
+    const userId =
+      req.nextUrl.searchParams.get(
+        "userId"
+      );
 
     if (!userId) {
       return NextResponse.json(
-        { error: "userId is required" },
-        { status: 400 }
+        {
+          error:
+            "userId is required",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const patients = await tablesDB.listRows({
-      databaseId: DATABASE_ID!,
-      tableId: PATIENT_COLLECTION_ID!,
-      queries: [Query.equal("userId", [userId])],
-    });
+    const { tablesDB } =
+      await getAppwrite();
 
-    return NextResponse.json(patients.rows[0] ?? null);
-  } catch (error) {
-    console.error("Error getting patient:", error);
+    const patients =
+      await tablesDB.listRows({
+        databaseId:
+          APPWRITE.DATABASE_ID,
+
+        tableId:
+          APPWRITE.TABLES.PATIENTS,
+
+        queries: [
+          Query.equal(
+            "userId",
+            [userId]
+          ),
+        ],
+      });
 
     return NextResponse.json(
-      { error: "Error getting patient" },
-      { status: 500 }
+      patients.rows[0] ?? null
+    );
+  } catch (error) {
+    console.error(
+      "Error getting patient:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Error getting patient",
+      },
+      {
+        status: 500,
+      }
     );
   }
+}
+
+/**
+ * Creates the Appwrite file view URL.
+ */
+function buildDocumentUrl({
+  endpoint,
+  projectId,
+  fileId,
+}: {
+  endpoint: string;
+  projectId: string;
+  fileId: string;
+}) {
+  const bucketId =
+    APPWRITE.BUCKETS.PATIENT_DOCUMENTS;
+
+  return (
+    `${endpoint}/storage/buckets/` +
+    `${bucketId}/files/` +
+    `${fileId}/view` +
+    `?project=${encodeURIComponent(projectId)}`
+  );
 }

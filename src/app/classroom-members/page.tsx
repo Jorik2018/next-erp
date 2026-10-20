@@ -1,4 +1,4 @@
-import ClassroomMemberPageClient from './ClassroomMemberPageClient'
+import ClassroomMemberPageClient from "../dashboard/pages/classroom_member"
 
 interface ClassroomMemberPageProps {
   searchParams: Promise<{

@@ -2,13 +2,9 @@
 
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import PostEditor from '../components/PostEditor/PostEditor'
+import PostEditor from '@/components/PostEditor/PostEditor'
 import { initializePost } from '@/lib/slices/editing-post-receipe'
 
-/**
- * @name EditPostEditor
- * @desc Initializes the post recipe and displays the post editor.
- */
 const EditPostEditor = () => {
   const dispatch = useDispatch()
 
@@ -16,7 +12,7 @@ const EditPostEditor = () => {
     dispatch(initializePost())
   }, [dispatch])
 
-  return <PostEditor />
+  return <PostEditor classroomID='123-mock' />
 }
 
 export default EditPostEditor

@@ -1,48 +1,79 @@
-import React from 'react'
-import Head from 'next/head'
-import Router from 'next/router'
+"use client";
 
-import UserConnectionStatusPanel from '../core/components/ChatroomPage/UserConnectionStatusPanel'
-import ClassroomActivityPanel from '../core/components/ClassroomPage/ClassroomActivityPanel'
-import ClassroomHeaderPanel from '../core/components/ClassroomPage/ClassroomHeaderPanel'
-import ChatMessagesPanel from '../core/components/ChatroomPage/ChatMessagesPanel'
-import AuthenticatedLayout from '../core/components/Layout/AuthenticatedLayout'
-import { CLASSROOM_PAGE } from '../core/constants/endpoints/ui'
-import Container from '../core/components/Container'
-import Panel from '../core/components/Panel'
-import withData from '../core/withData'
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-class ChatroomPage extends React.Component {
-  static async getInitialProps() {
-    return {
-      isMember: 1,
-      classroomID: '1',
-      classroomName: 'Introduction to Computer Science'
-    }
-  }
+import UserConnectionStatusPanel from "@/components/ChatroomPage/UserConnectionStatusPanel";
+import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
+import ClassroomHeaderPanel from "@/components/ClassroomPage/ClassroomHeaderPanel";
+import ChatMessagesPanel from "@/components/ChatroomPage/ChatMessagesPanel";
+import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
+import Container from "@/components/Container";
+import Panel from "@/components/Panel";
 
-  render() {
-    const { isMember, classroomID, classroomName } = this.props
-    return !isMember
-      ? Router.push(CLASSROOM_PAGE)
-      : [
-          <Head>
-            <title>ห้องแชท - {classroomName} | LEARNSPACE</title>
-          </Head>,
-          <AuthenticatedLayout>
-            <ClassroomHeaderPanel classroomID={classroomID} classroomName={classroomName} />
-            <Container marginTop="8em">
-              <Panel left width="40" paddingBottom="6em">
-                <UserConnectionStatusPanel />
-              </Panel>
-              <Panel right width="60" paddingBottom="6em">
-                <ChatMessagesPanel />
-              </Panel>
-            </Container>
-            <ClassroomActivityPanel />
-          </AuthenticatedLayout>
-        ]
-  }
+import { CLASSROOM_PAGE } from "@/constants/endpoints/ui";
+
+interface ChatroomPageProps {
+  isMember?: boolean;
+  classroomID?: string;
+  classroomName?: string;
+  currentUserID?: string;
+  classroomCreatorID?: string;
 }
 
-export default withData(ChatroomPage)
+const ChatroomPage = ({
+  isMember = true,
+  classroomID = "1",
+  classroomName = "Introduction to Computer Science",
+  currentUserID,
+  classroomCreatorID,
+}: ChatroomPageProps) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isMember) {
+      router.replace(
+        `${CLASSROOM_PAGE}?id=${classroomID}`
+      );
+    }
+  }, [isMember, classroomID, router]);
+
+  if (!isMember) {
+    return null;
+  }
+
+  return (
+    <AuthenticatedLayout>
+      <ClassroomHeaderPanel
+        classroomID={classroomID}
+        classroomName={classroomName}
+      />
+
+      <Container $marginTop="8em">
+        <Panel
+          $left
+          $width={40}
+          $paddingBottom="6em"
+        >
+          <UserConnectionStatusPanel />
+        </Panel>
+
+        <Panel
+          $right
+          $width={60}
+          $paddingBottom="6em"
+        >
+          <ChatMessagesPanel />
+        </Panel>
+      </Container>
+
+      <ClassroomActivityPanel
+        classroomID={classroomID}
+        currentUserID={currentUserID}
+        classroomCreatorID={classroomCreatorID}
+      />
+    </AuthenticatedLayout>
+  );
+};
+
+export default ChatroomPage;

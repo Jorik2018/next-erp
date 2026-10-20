@@ -8,12 +8,12 @@ import ClassroomHeaderPanel from '@/components/ClassroomPage/ClassroomHeaderPane
 import ClassroomInfoPanel from '@/components/ClassroomPage/ClassroomInfoPanel'
 import ClassroomPreview from '@/components/ClassroomPage/ClassroomPreview'
 import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
-import LoadingIcon from '../../core/components/LoadingIcon'
-import Container from '../../core/components/Container'
-import PostsList from '../../core/components/PostsList'
-import Panel from '../../core/components/Panel'
-import { useAppSelector } from '@/app/core/store/hooks'
+import LoadingIcon from '@/components/LoadingIcon'
+import Container from '@/components/Container'
+import PostsList from '@/components/PostsList'
+import Panel from '@/components/Panel'
 import Card from '@/components/Card'
+import { useAppSelector } from '@/lib/store/hooks'
 
 
 interface ClassroomCreator {

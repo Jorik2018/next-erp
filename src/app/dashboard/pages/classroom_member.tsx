@@ -4,22 +4,18 @@ import { gql } from '@apollo/client'
 import { useQuery } from '@apollo/client/react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-
-
-import { CLASSROOM_PAGE } from '../core/constants/endpoints/ui'
-
-
-
-import ClassroomInvitationModal, { hideClassroomInvitationModal, showClassroomInvitationModal } from '@/app/core/reducers/classroom-invitation-modal'
-import { useAppDispatch, useAppSelector } from '@/app/core/store/hooks'
-import ClassroomMemberPanel from '@/app/core/components/ClassroomMemberPage/ClassroomMemberPanel'
-import Card from '@/app/core/components/Card'
-import Container from '@/app/core/components/Container'
-import { Button } from '@/app/core/components/Button'
-import LoadingIcon from '@/app/core/components/LoadingIcon'
-import AuthenticatedLayout from '@/app/core/components/Layout/AuthenticatedLayout'
-import ClassroomActivityPanel from '@/app/core/core/components/ClassroomPage/ClassroomActivityPanel'
-
+import ClassroomMemberPanel from '@/components/ClassroomMemberPage/ClassroomMemberPanel'
+import Card from '@/components/Card'
+import Container from '@/components/Container'
+import { Button } from '@/components/Button'
+import LoadingIcon from '@/components/LoadingIcon'
+import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
+import { hideClassroomInvitationModal, showClassroomInvitationModal } from '@/lib/slices/classroom-invitation-modal'
+import ClassroomHeaderPanel from '@/components/ClassroomPage/ClassroomHeaderPanel'
+import ClassroomActivityPanel from '@/components/ClassroomPage/ClassroomActivityPanel'
+import { CLASSROOM_PAGE } from '@/constants/endpoints/ui'
+import ClassroomInvitationModal from '@/components/ClassroomInvitationModal'
 interface ClassroomMember {
   _id: string
   fname: string
@@ -200,7 +196,7 @@ const ClassroomMemberPageClient = ({
           }
         />
 
-        <ClassroomActivityPanel />
+        <ClassroomActivityPanel classroomID={classroomMembers.classroom._id}/>
       </Container>
     </AuthenticatedLayout>
   )

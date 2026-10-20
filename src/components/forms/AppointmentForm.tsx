@@ -46,7 +46,7 @@ export const AppointmentForm = ({
       primaryPhysician: appointment ? appointment?.primaryPhysician : "",
       schedule: appointment
         ? new Date(appointment?.schedule!)
-        : new Date(Date.now()),
+        : new Date(),
       reason: appointment ? appointment.reason : "",
       note: appointment?.note || "",
       cancellationReason: appointment?.cancellationReason || "",
@@ -141,9 +141,20 @@ export const AppointmentForm = ({
         )}
 
         {type !== "cancel" && (
+          /**Type 'Control<{ schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }, any, { ...; } | ... 1 more ... | { ...' is not assignable to type 'Control<any>'.
+  The types of '_options.validate' are incompatible between these types.
+    Type 'ValidateForm<{ schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }> | undefined' is not assignable to type 'ValidateForm<any> | undefined'.
+      Type 'ValidateForm<{ schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }>' is not assignable to type 'ValidateForm<any>'.
+        Types of parameters 'props' and 'props' are incompatible.
+          Type '{ formValues: any; formState: FormState<any>; eventType?: ValidateFormEventType | undefined; name?: string | string[] | undefined; }' is not assignable to type '{ formValues: { schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }; formState: FormState<...>; ev...'.
+            Types of property 'name' are incompatible.
+              Type 'string | string[] | undefined' is not assignable to type '"schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason" | ("schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason")[] | undefined'.
+                Type 'string' is not assignable to type '"schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason" | ("schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason")[] | undefined'.
+CustomFormField.tsx(29, 3): The expected type comes from property 'control' which is declared here on type 'IntrinsicAttributes & CustomProps' */
           <>
             <CustomFormField
               fieldType={FormFieldType.SELECT}
+              
               control={form.control}
               name="primaryPhysician"
               label="Doctor"

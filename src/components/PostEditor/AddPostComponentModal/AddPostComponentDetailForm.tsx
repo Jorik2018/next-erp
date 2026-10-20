@@ -20,7 +20,7 @@ import {
   VIDEO,
   LIST,
   MAP
-} from '../../../../constants/post-content/components'
+} from '@/constants/post-content/components'
 
 type PostComponentType =
   | typeof HEADING

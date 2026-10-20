@@ -6,24 +6,22 @@ import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
 
-import {
-  showLoadingModal,
-  hideLoadingModal
-} from '../../reducers/mutation-status'
 
 import {
   REFRESH_TOKEN,
   ACCESS_TOKEN
 } from '../../constants/security'
 
-import { initializeAuthenticatedUser } from '../../reducers/user'
-import { showErrorAlert } from '../../reducers/error-alert'
+
 
 import { DASHBOARD_PAGE } from '../../constants/endpoints/ui'
 
 import Card, { Header, Body } from '../Card'
 import { InputField } from '../Form'
 import { Button } from '../Button'
+import { hideLoadingModal, showLoadingModal } from '@/lib/slices/mutation-status'
+import { showErrorAlert } from '@/lib/slices/error-alert'
+import { initializeAuthenticatedUser } from '@/lib/slices/user'
 
 interface LoginFormValues {
   email: string
@@ -120,7 +118,7 @@ const LoginForm = () => {
         dispatch(
           showErrorAlert(
             result?.err?.message ??
-              'Unable to log in.'
+            'Unable to log in.'
           )
         )
 
@@ -152,7 +150,12 @@ const LoginForm = () => {
       )
 
       dispatch(
-        initializeAuthenticatedUser(result.user)
+        initializeAuthenticatedUser({
+          id: result.user._id,
+          fname: result.user.fname,
+          lname: result.user.lname ?? "",
+          email: result.user.email,
+        })
       )
 
       router.push(DASHBOARD_PAGE)

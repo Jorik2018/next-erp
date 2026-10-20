@@ -6,16 +6,20 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-    environment {
-        SERVICE_ID = 'next-erp'
-        SERVICE_NAME = 'Next ERP'
-        SERVICE_DESCRIPTION = 'Next.js ERP Application'
-        DEPLOY_DIR = 'D:\\apps\\next-erp'
+environment {
+    SERVICE_ID = 'next-erp'
+    SERVICE_NAME = 'Next ERP'
+    SERVICE_DESCRIPTION = 'Next.js ERP Application'
 
-        PORT = '7787'
-        BASE_PATH = '/next'
-        VAULT_PATH = '/global'
-    }
+    DEPLOY_DIR = 'D:\\apps\\next-erp'
+
+    PORT = '7785'
+    BASE_PATH = '/next'
+
+    VAULT_PATH = '/global'
+
+    PNPM = 'D:\\tools\\pnpm\\pnpm.exe'
+}
 
     stages {
 
@@ -110,60 +114,59 @@ pipeline {
         // 4. Install dependencies
         // ============================================================
 
-        stage('Install Dependencies') {
-            steps {
-                bat '''
-                    cd /D "%DEPLOY_DIR%"
+stage('Install Dependencies') {
+    steps {
+        bat '''
+            cd /D "%DEPLOY_DIR%"
 
-                    echo ==========================================
-                    echo Installing dependencies
-                    echo ==========================================
+            echo ==========================================
+            echo Installing dependencies
+            echo ==========================================
 
-                    pnpm install --frozen-lockfile
+            "%PNPM%" install --frozen-lockfile
 
-                    if errorlevel 1 (
-                        echo ERROR: pnpm install failed.
-                        exit /B 1
-                    )
-                '''
-            }
-        }
-
+            if errorlevel 1 (
+                echo ERROR: pnpm install failed.
+                exit /B 1
+            )
+        '''
+    }
+}
         // ============================================================
         // 5. Build Next.js
         // ============================================================
 
-        stage('Build Application') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'VAULT_TOKEN',
-                        variable: 'VAULT_TOKEN'
-                    )
-                ]) {
-                    bat '''
-                        cd /D "%DEPLOY_DIR%"
+stage('Build Application') {
+    steps {
+        withCredentials([
+            string(
+                credentialsId: 'VAULT_TOKEN',
+                variable: 'VAULT_TOKEN'
+            )
+        ]) {
+            bat '''
+                cd /D "%DEPLOY_DIR%"
 
-                        SET "NODE_ENV=production"
-                        SET "VAULT_ADDR=%VAULT_ADDR%"
-                        SET "VAULT_PATH=%VAULT_PATH%"
-                        SET "VAULT_TOKEN=%VAULT_TOKEN%"
+                SET "NODE_ENV=production"
+                SET "BASE_PATH=%BASE_PATH%"
+                SET "VAULT_ADDR=%VAULT_ADDR%"
+                SET "VAULT_PATH=%VAULT_PATH%"
+                SET "VAULT_TOKEN=%VAULT_TOKEN%"
 
-                        echo ==========================================
-                        echo Building Next ERP
-                        echo ==========================================
+                echo ==========================================
+                echo Building Next ERP
+                echo ==========================================
 
-                        pnpm build
+                "%PNPM%" build
 
-                        if errorlevel 1 (
-                            echo ERROR: Next.js build failed.
-                            exit /B 1
-                        )
-                    '''
-                }
-            }
+                if errorlevel 1 (
+                    echo ERROR: Next.js build failed.
+                    exit /B 1
+                )
+            '''
         }
-
+    }
+}
         // ============================================================
         // 6. Verify build
         // ============================================================

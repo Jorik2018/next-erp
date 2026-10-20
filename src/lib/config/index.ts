@@ -9,6 +9,7 @@ export interface AppConfig {
     endpoint: string;
     projectId: string;
     apiKey: string;
+    databaseId: string;
   };
 }
 
@@ -36,6 +37,7 @@ async function loadConfig(): Promise<AppConfig> {
         endpoint: getRequiredEnv("APPWRITE_ENDPOINT"),
         projectId: getRequiredEnv("APPWRITE_PROJECT_ID"),
         apiKey: getRequiredEnv("APPWRITE_API_KEY"),
+        databaseId: getRequiredEnv("APPWRITE_DATABASE_ID"),
       },
     };
   }
@@ -72,6 +74,10 @@ async function loadConfig(): Promise<AppConfig> {
       apiKey: getRequiredSecret(
         secrets,
         "APPWRITE_API_KEY"
+      ),
+      databaseId: getRequiredSecret(
+        secrets,
+        "APPWRITE_DATABASE_ID"
       ),
     },
   };

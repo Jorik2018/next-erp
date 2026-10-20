@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -9,8 +10,6 @@ import {
 } from "@tanstack/react-table";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 import {
   Table,
@@ -22,7 +21,6 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/Button";
-import { decryptKey } from "@/lib/utils";
 
 interface DataTableProps<TData extends object> {
   columns: ColumnDef<StockFeatures, TData>[];
@@ -33,24 +31,6 @@ export function DataTable<TData extends object>({
   columns,
   data,
 }: DataTableProps<TData>) {
-  const router = useRouter();
-
-  useEffect(() => {
-    const encryptedKey =
-      window.localStorage.getItem("accessKey");
-
-    const accessKey = encryptedKey
-      ? decryptKey(encryptedKey)
-      : null;
-
-    if (
-      accessKey !==
-      process.env.NEXT_PUBLIC_ADMIN_PASSKEY
-    ) {
-      router.replace("/");
-    }
-  }, [router]);
-
   const table = useTable({
     features: stockFeatures,
     data,
@@ -63,23 +43,28 @@ export function DataTable<TData extends object>({
     <div className="data-table">
       <Table className="shad-table">
         <TableHeader className="bg-dark-200">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="shad-table-row-header"
-            >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
+          {table
+            .getHeaderGroups()
+            .map((headerGroup) => (
+              <TableRow
+                key={headerGroup.id}
+                className="shad-table-row-header"
+              >
+                {headerGroup.headers.map(
+                  (header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column
+                              .columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  )
+                )}
+              </TableRow>
+            ))}
         </TableHeader>
 
         <TableBody>
@@ -89,14 +74,17 @@ export function DataTable<TData extends object>({
                 key={row.id}
                 className="shad-table-row"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
+                {row
+                  .getVisibleCells()
+                  .map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef
+                          .cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
               </TableRow>
             ))
           ) : (
@@ -117,8 +105,12 @@ export function DataTable<TData extends object>({
           variant="outline"
           size="sm"
           type="button"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() =>
+            table.previousPage()
+          }
+          disabled={
+            !table.getCanPreviousPage()
+          }
           className="shad-gray-btn"
         >
           <Image

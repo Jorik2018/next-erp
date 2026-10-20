@@ -29,7 +29,7 @@ export function getConfig(): Promise<AppConfig> {
 async function loadConfig(): Promise<AppConfig> {
   if (process.env.NODE_ENV === "development") {
     return {
-      databaseUrl: getRequiredEnv("DATABASE_URL"),
+      databaseUrl: getRequiredEnv(process.env.DATABASE+"_URL"),
       mongoUrl: getRequiredEnv("MONGODB_URL"),
       redisUrl: getRequiredEnv("REDIS_URL"),
 

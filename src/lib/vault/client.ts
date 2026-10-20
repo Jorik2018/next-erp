@@ -4,6 +4,7 @@ interface VaultSecretResponse {
   };
 }
 
+
 export async function getVaultSecret(
   path: string
 ): Promise<Record<string, string>> {

@@ -6,3 +6,7 @@ For more information, see the [course curriculum](https://nextjs.org/learn) on t
 
 
 https://github.com/ChampTiravat/learnspace-api
+
+
+
+pnpm exec tsx scripts/setup-appwrite.ts

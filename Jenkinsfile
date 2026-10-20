@@ -227,6 +227,7 @@ stage('Configure Service') {
                     --env "PORT=%PORT%" ^
                     --env "BASE_PATH=%BASE_PATH%" ^
                     --env "VAULT_ADDR=%VAULT_ADDR%" ^
+                    --env "DATABASE=POSTGRES" ^
                     --env "APPWRITE_APPOINTMENTS_ID=%APPWRITE_APPOINTMENTS_ID%" ^
                     --env "VAULT_PATH=%VAULT_PATH%" ^
                     --env "VAULT_TOKEN=%VAULT_TOKEN%"

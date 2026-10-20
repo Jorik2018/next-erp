@@ -1,91 +1,233 @@
 // src/app/api/todo/route.ts
-import { NextResponse } from 'next/server'
-import { ObjectId } from 'mongodb'
-import clientPromise from '@/lib/mongodb'
+
+import { ObjectId } from "mongodb";
+import { NextResponse } from "next/server";
+
+import { getMongoClient } from "@/lib/mongodb";
+
+const DATABASE_NAME = "learnspace";
+const COLLECTION_NAME = "todos";
 
 export async function GET() {
-  const client = await clientPromise
-  const db = client.db('learnspace')
+  try {
+    const client = await getMongoClient();
 
-  const todos = await db
-    .collection('todos')
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray()
+    const db = client.db(DATABASE_NAME);
 
-  return NextResponse.json(todos)
+    const todos = await db
+      .collection(COLLECTION_NAME)
+      .find({})
+      .sort({
+        createdAt: -1,
+      })
+      .toArray();
+
+    return NextResponse.json(todos);
+  } catch (error) {
+    console.error(
+      "Error retrieving todos:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        message: "Unable to retrieve todos",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
 
 export async function POST(req: Request) {
-  const body = await req.json()
+  try {
+    const body = await req.json();
 
-  if (!body.title) {
+    if (
+      typeof body.title !== "string" ||
+      !body.title.trim()
+    ) {
+      return NextResponse.json(
+        {
+          message: "title is required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const client = await getMongoClient();
+
+    const db = client.db(DATABASE_NAME);
+
+    const todo = {
+      title: body.title.trim(),
+      completed: false,
+      createdAt: new Date(),
+    };
+
+    const result = await db
+      .collection(COLLECTION_NAME)
+      .insertOne(todo);
+
     return NextResponse.json(
-      { message: 'title is required' },
-      { status: 400 },
-    )
+      {
+        _id: result.insertedId,
+        ...todo,
+      },
+      {
+        status: 201,
+      }
+    );
+  } catch (error) {
+    console.error(
+      "Error creating todo:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        message: "Unable to create todo",
+      },
+      {
+        status: 500,
+      }
+    );
   }
-
-  const client = await clientPromise
-  const db = client.db('learnspace')
-
-  const todo = {
-    title: body.title,
-    completed: false,
-    createdAt: new Date(),
-  }
-
-  const result = await db.collection('todos').insertOne(todo)
-
-  return NextResponse.json({
-    _id: result.insertedId,
-    ...todo,
-  })
 }
 
 export async function PATCH(req: Request) {
-  const body = await req.json()
+  try {
+    const body = await req.json();
 
-  if (!body._id) {
+    if (
+      typeof body._id !== "string" ||
+      !ObjectId.isValid(body._id)
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            "A valid _id is required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const client = await getMongoClient();
+
+    const db = client.db(DATABASE_NAME);
+
+    const result = await db
+      .collection(COLLECTION_NAME)
+      .updateOne(
+        {
+          _id: new ObjectId(body._id),
+        },
+        {
+          $set: {
+            completed: Boolean(
+              body.completed
+            ),
+            updatedAt: new Date(),
+          },
+        }
+      );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        {
+          message: "Todo not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+    });
+  } catch (error) {
+    console.error(
+      "Error updating todo:",
+      error
+    );
+
     return NextResponse.json(
-      { message: '_id is required' },
-      { status: 400 },
-    )
-  }
-
-  const client = await clientPromise
-  const db = client.db('learnspace')
-
-  await db.collection('todos').updateOne(
-    { _id: new ObjectId(body._id) },
-    {
-      $set: {
-        completed: Boolean(body.completed),
-        updatedAt: new Date(),
+      {
+        message: "Unable to update todo",
       },
-    },
-  )
-
-  return NextResponse.json({ success: true })
+      {
+        status: 500,
+      }
+    );
+  }
 }
 
 export async function DELETE(req: Request) {
-  const { searchParams } = new URL(req.url)
-  const id = searchParams.get('id')
+  try {
+    const { searchParams } =
+      new URL(req.url);
 
-  if (!id) {
+    const id =
+      searchParams.get("id");
+
+    if (
+      !id ||
+      !ObjectId.isValid(id)
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            "A valid id is required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const client = await getMongoClient();
+
+    const db = client.db(DATABASE_NAME);
+
+    const result = await db
+      .collection(COLLECTION_NAME)
+      .deleteOne({
+        _id: new ObjectId(id),
+      });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        {
+          message: "Todo not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+    });
+  } catch (error) {
+    console.error(
+      "Error deleting todo:",
+      error
+    );
+
     return NextResponse.json(
-      { message: 'id is required' },
-      { status: 400 },
-    )
+      {
+        message: "Unable to delete todo",
+      },
+      {
+        status: 500,
+      }
+    );
   }
-
-  const client = await clientPromise
-  const db = client.db('learnspace')
-
-  await db.collection('todos').deleteOne({
-    _id: new ObjectId(id),
-  })
-
-  return NextResponse.json({ success: true })
 }

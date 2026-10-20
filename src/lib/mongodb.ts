@@ -1,29 +1,36 @@
 // src/lib/mongodb.ts
-import { MongoClient } from 'mongodb'
 
-const uri = process.env.MONGODB_URL
+import { MongoClient } from "mongodb";
 
-if (!uri) {
-  throw new Error('Missing MONGODB_URL')
+import { getConfig } from "@/lib/config";
+
+const globalForMongo =
+  globalThis as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
+
+async function createMongoClient(): Promise<MongoClient> {
+  const config = await getConfig();
+
+  const client = new MongoClient(
+    config.mongoUrl
+  );
+
+  await client.connect();
+
+  return client;
 }
 
-let client: MongoClient
-let clientPromise: Promise<MongoClient>
-
-const globalForMongo = globalThis as typeof globalThis & {
-  _mongoClientPromise?: Promise<MongoClient>
-}
-
-if (process.env.NODE_ENV === 'development') {
+export function getMongoClient(): Promise<MongoClient> {
   if (!globalForMongo._mongoClientPromise) {
-    client = new MongoClient(uri)
-    globalForMongo._mongoClientPromise = client.connect()
+    globalForMongo._mongoClientPromise =
+      createMongoClient().catch((error) => {
+        globalForMongo._mongoClientPromise =
+          undefined;
+
+        throw error;
+      });
   }
 
-  clientPromise = globalForMongo._mongoClientPromise
-} else {
-  client = new MongoClient(uri)
-  clientPromise = client.connect()
+  return globalForMongo._mongoClientPromise;
 }
-
-export default clientPromise

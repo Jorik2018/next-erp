@@ -1,3 +1,4 @@
+//src/lib/config/index.ts
 import { getVaultSecret } from "@/lib/vault/client";
 
 export interface AppConfig {

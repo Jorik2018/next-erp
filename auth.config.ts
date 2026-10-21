@@ -37,14 +37,10 @@ export const authConfig = {
         loginUrl.pathname = "/login";
         loginUrl.search = "";
 
-        // nextUrl.pathname ya viene SIN /next:
-        // /dashboard
-        // /dashboard/invoices
-        // /admin/...
-        loginUrl.searchParams.set(
-          "destiny",
-          nextUrl.pathname + nextUrl.search,
-        );
+        const destiny = `${nextUrl.pathname}${nextUrl.search}`
+          .replace(/^\/+/, "");
+
+        loginUrl.searchParams.set("destiny", destiny);
 
         return Response.redirect(loginUrl);
       }

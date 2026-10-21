@@ -6,11 +6,6 @@ import AcmeLogo from './ui/acme-logo';
 import { withBasePath } from '@/lib/base-path';
 
 export default function Page() {
-    console.log(
-    'index BASE PATH:',
-    process.env.NEXT_PUBLIC_BASE_PATH
-  );
-  
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className={styles.shape} >

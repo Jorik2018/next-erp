@@ -23,30 +23,40 @@ export const authConfig = {
   providers: [],
 
   callbacks: {
-    authorized({ auth, request: { nextUrl ,url,headers} }) {
-
-        console.log("REQUEST URL:", url);
-  console.log("NEXT URL:", nextUrl.href);
-  console.log("ORIGIN:", nextUrl.origin);
-
-  console.log(
-    "HOST:",
-    headers.get("host"),
-  );
-
-  console.log(
-    "FORWARDED HOST:",
-    headers.get("x-forwarded-host"),
-  );
-
+    authorized({ auth, request }) {
+      const { nextUrl, headers } = request;
 
       const isLoggedIn = !!auth?.user;
 
-      const isProtectedRoute =
-        nextUrl.pathname.startsWith("/dashboard") ||
+      const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/admin");
 
-      return isProtectedRoute ? isLoggedIn : true;
+      if (isProtectedRoute && !isLoggedIn) {
+        const proto = headers.get("x-forwarded-proto") ?? "https";
+
+        const host = headers.get("x-forwarded-host") ??
+          headers.get("host");
+
+        if (!host) {
+          return false;
+        }
+
+        const publicOrigin = `${proto}://${host}`;
+
+        const callbackUrl =
+          `${publicOrigin}/next${nextUrl.pathname}${nextUrl.search}`;
+
+        const loginUrl = new URL(`${publicOrigin}/next/login`);
+
+        loginUrl.searchParams.set(
+          "callbackUrl",
+          callbackUrl,
+        );
+
+        return Response.redirect(loginUrl);
+      }
+
+      return true;
     },
   },
 } satisfies NextAuthConfig;

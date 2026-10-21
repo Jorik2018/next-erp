@@ -31,6 +31,8 @@ export const {
 
     trustHost: true,
 
+    basePath: "/next/api/auth",
+
     session: {
       strategy: "jwt",
     },

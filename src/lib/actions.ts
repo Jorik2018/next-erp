@@ -4,9 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
 //import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
+import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
-
 
 export type State = {
   errors?: {
@@ -116,16 +115,30 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', formData);
+    const destiny =
+      formData.get("destiny")?.toString() || "dashboard";
+
+    const safeDestiny =
+      /^[a-zA-Z0-9/_-]+$/.test(destiny)
+        ? destiny
+        : "dashboard";
+
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+
+      redirectTo: `/${safeDestiny}`,
+    });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
+        case "CredentialsSignin":
+          return "Invalid credentials.";
         default:
-          return 'Something went wrong.';
+          return "Something went wrong.";
       }
     }
+
     throw error;
   }
 }

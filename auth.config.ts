@@ -24,7 +24,7 @@ export const authConfig = {
 
   callbacks: {
     authorized({ auth, request }) {
-      const { nextUrl, headers } = request;
+      const { nextUrl } = request;
 
       const isLoggedIn = !!auth?.user;
 
@@ -32,25 +32,18 @@ export const authConfig = {
         nextUrl.pathname.startsWith("/admin");
 
       if (isProtectedRoute && !isLoggedIn) {
-        const proto = headers.get("x-forwarded-proto") ?? "https";
+        const loginUrl = nextUrl.clone();
 
-        const host = headers.get("x-forwarded-host") ??
-          headers.get("host");
+        loginUrl.pathname = "/login";
+        loginUrl.search = "";
 
-        if (!host) {
-          return false;
-        }
-
-        const publicOrigin = `${proto}://${host}`;
-
-        const callbackUrl =
-          `${publicOrigin}/next${nextUrl.pathname}${nextUrl.search}`;
-
-        const loginUrl = new URL(`${publicOrigin}/next/login`);
-
+        // nextUrl.pathname ya viene SIN /next:
+        // /dashboard
+        // /dashboard/invoices
+        // /admin/...
         loginUrl.searchParams.set(
-          "callbackUrl",
-          callbackUrl,
+          "destiny",
+          nextUrl.pathname + nextUrl.search,
         );
 
         return Response.redirect(loginUrl);

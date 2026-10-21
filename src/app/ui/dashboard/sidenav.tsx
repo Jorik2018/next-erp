@@ -19,8 +19,15 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form action={async () => {
-          'use server';
-          await signOut({ redirectTo: '/' });
+
+    "use server";
+
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+    await signOut({
+      redirectTo: `${basePath}/`,
+    });
+
         }}>
           <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
             <PowerIcon className="w-6" />

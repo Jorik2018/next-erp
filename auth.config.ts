@@ -1,9 +1,16 @@
 //auth.config.ts
+import { getConfig } from "@/lib/config";
 import type { NextAuthConfig } from "next-auth";
+
+const config = await getConfig();
+console.log(
+  "AUTH CONFIG LOADED:",
+  config.authSecret ? "SECRET OK" : "NO SECRET",
+);
 
 export const authConfig = {
   trustHost: true,
-
+  secret: config.authSecret,
   pages: {
     signIn: "/login",
   },
@@ -21,8 +28,7 @@ export const authConfig = {
 
       const isLoggedIn = !!auth?.user;
 
-      const isProtectedRoute =
-        nextUrl.pathname.startsWith("/dashboard") ||
+      const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/admin");
 
       return isProtectedRoute ? isLoggedIn : true;

@@ -37,7 +37,7 @@ async function loadConfig(): Promise<AppConfig> {
   // DEVELOPMENT -> .env
   // ============================================================
 
-  if (!process.env.PROD) {
+  if (!process.env.VAULT_ADDR) {
     return {
       authSecret:
         getRequiredEnv("AUTH_SECRET"),

@@ -149,7 +149,6 @@ stage('Build Application') {
                 cd /D "%DEPLOY_DIR%"
 
                 SET "NODE_ENV=production"
-                SET "PROD=true"
                 SET "DATABASE=PGNEONDB"
                 SET "BASE_PATH=%BASE_PATH%"
                 SET "VAULT_ADDR=%VAULT_ADDR%"
@@ -228,7 +227,6 @@ stage('Configure Service') {
 --args "start -p %PORT%" ^
                     --env "NODE_ENV=production" ^
                     --env "PORT=%PORT%" ^
-                    --env "PROD=true" ^
                     --env "BASE_PATH=%BASE_PATH%" ^
                     --env "VAULT_ADDR=%VAULT_ADDR%" ^
                     --env "DATABASE=PGNEONDB" ^

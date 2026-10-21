@@ -44,6 +44,10 @@ async function loadConfig(): Promise<AppConfig> {
 
   const secrets = await getVaultSecret("global");
 
+  console.log(getRequiredSecret(
+      secrets,
+      getRequiredEnv(process.env.DATABASE+"_URL")
+    ))
   return {
     databaseUrl: getRequiredSecret(
       secrets,

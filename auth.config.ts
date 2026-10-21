@@ -1,3 +1,4 @@
+//auth.config.ts
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
@@ -5,6 +6,25 @@ export const authConfig = {
 
   pages: {
     signIn: "/login",
+  },
+
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      console.log("AUTHORIZED AUTH:", auth);
+      console.log("AUTHORIZED PATH:", nextUrl.pathname);
+
+      const isLoggedIn = !!auth?.user;
+
+      const isProtectedRoute =
+        nextUrl.pathname.startsWith("/dashboard") ||
+        nextUrl.pathname.startsWith("/admin");
+
+      if (isProtectedRoute) {
+        return isLoggedIn;
+      }
+
+      return true;
+    },
   },
 
   providers: [],

@@ -1,16 +1,9 @@
 // src/proxy.ts
 
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
-export function proxy(request: NextRequest) {
-  console.log("===== PROXY PURO EJECUTADO =====");
-  console.log("URL:", request.url);
-  console.log("PATH:", request.nextUrl.pathname);
-
-  return NextResponse.next();
-}
+export { auth as proxy } from "@/auth";
 
 export const config = {
-  matcher: ["/next/dashboard/:path*"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

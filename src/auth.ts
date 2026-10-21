@@ -79,32 +79,29 @@ export const {
       }),
     ],
 
-    callbacks: {
-      //...authConfig.callbacks,
+callbacks: {
+  ...authConfig.callbacks,
 
-      async jwt({ token, user }) {
-        if (user) {
-          token._id = user._id;
-        }
+  async jwt({ token, user }) {
+    if (user) {
+      token._id = user._id;
+    }
 
-        return token;
-      },
+    return token;
+  },
 
-      async session({
-        session,
-        token,
-      }) {
-        console.log('auth.session',session,token)
-        if (session.user && token.sub) {
-          session.user.id = token.sub;
+  async session({ session, token }) {
+    if (session.user && token.sub) {
+      session.user.id = token.sub;
 
-          session.user._id = typeof token._id === "string"
-            ? token._id
-            : undefined;
-        }
+      session.user._id =
+        typeof token._id === "string"
+          ? token._id
+          : undefined;
+    }
 
-        return session;
-      },
-    },
+    return session;
+  },
+},
   };
 });

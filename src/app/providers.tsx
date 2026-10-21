@@ -22,10 +22,10 @@ export function Providers({
   children
 }: ProvidersProps) {
   const client = getApolloClient()
-
+  const BASE_PATH = process.env.BASE_PATH || "";
   return (
     <StyledComponentsRegistry>
-      <SessionProvider>
+      <SessionProvider basePath={BASE_PATH}>
         <ApolloProvider client={client}>
           <ReduxProvider store={store}>
             <AuthSync />

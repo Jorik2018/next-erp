@@ -42,7 +42,7 @@ async function loadConfig(): Promise<AppConfig> {
         getRequiredEnv("AUTH_SECRET"),
 
       databaseUrl:
-        getRequiredEnv(databaseUrlKey),
+        getRequiredEnv("DATABASE_URL"),
 
       mongoUrl:
         getRequiredEnv("MONGODB_URL"),

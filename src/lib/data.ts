@@ -120,7 +120,8 @@ export async function fetchFilteredInvoices(
 
 export async function fetchInvoicesPages(query: string) {
   try {
-    const data = await (await getSql())`SELECT COUNT(*)
+    const sql = await getSql();
+    const data = await sql`SELECT COUNT(*)
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
@@ -141,7 +142,8 @@ export async function fetchInvoicesPages(query: string) {
 
 export async function fetchInvoiceById(id: string) {
   try {
-    const data = await (await getSql())<InvoiceForm[]>`
+    const sql = await getSql();
+    const data = await sql<InvoiceForm[]>`
       SELECT
         invoices.id,
         invoices.customer_id,
@@ -166,7 +168,8 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchCustomers() {
   try {
-    const customers = await (await getSql())<CustomerField[]>`
+    const sql = await getSql();
+    const customers = await sql<CustomerField[]>`
       SELECT
         id,
         name
@@ -183,7 +186,8 @@ export async function fetchCustomers() {
 
 export async function fetchFilteredCustomers(query: string) {
   try {
-    const data = await (await getSql())<CustomersTableType[]>`
+    const sql = await getSql();
+    const data = await sql<CustomersTableType[]>`
 		SELECT
 		  customers.id,
 		  customers.name,

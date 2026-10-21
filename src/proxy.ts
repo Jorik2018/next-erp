@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
 export const proxy = auth((request) => {
+  console.log("===== PROXY EJECUTADO =====");
   console.log("PROXY PATH:", request.nextUrl.pathname);
   console.log("PROXY AUTH:", request.auth);
 
@@ -11,7 +12,5 @@ export const proxy = auth((request) => {
 });
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/dashboard/:path*"],
 };

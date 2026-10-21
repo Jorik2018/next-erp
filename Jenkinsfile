@@ -225,6 +225,7 @@ stage('Configure Service') {
 --args "start -p %PORT%" ^
                     --env "NODE_ENV=production" ^
                     --env "PORT=%PORT%" ^
+                    --env "PROD=true" ^
                     --env "BASE_PATH=%BASE_PATH%" ^
                     --env "VAULT_ADDR=%VAULT_ADDR%" ^
                     --env "DATABASE=PGNEONDB" ^

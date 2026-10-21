@@ -1,6 +1,18 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  trustHost: true,
+
+  pages: {
+    signIn: "/login",
+  },
+
+  providers: [],
+} satisfies NextAuthConfig;
+
+/*import type { NextAuthConfig } from "next-auth";
+
+export const authConfig = {
   pages: {
     signIn: "/login",
   },
@@ -45,4 +57,4 @@ export const authConfig = {
   },
 
   providers: [],
-} satisfies NextAuthConfig;
+} satisfies NextAuthConfig;*/

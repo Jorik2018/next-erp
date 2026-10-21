@@ -80,7 +80,7 @@ export const {
     ],
 
     callbacks: {
-      ...authConfig.callbacks,
+      //...authConfig.callbacks,
 
       async jwt({ token, user }) {
         if (user) {

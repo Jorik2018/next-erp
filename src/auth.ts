@@ -9,8 +9,7 @@ import {
 } from "@/lib/db/mongo-users";
 import { findUserByEmail } from "./lib/db/users";
 
-const BASE_PATH =
-  process.env.BASE_PATH || "";
+const BASE_PATH = process.env.BASE_PATH || "";
 const credentialsSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),

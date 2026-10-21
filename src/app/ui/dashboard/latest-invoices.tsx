@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import { LatestInvoice } from '@/lib/definitions';
 import { fetchLatestInvoices } from '@/lib/data';
+import { withBasePath } from '@/lib/base-path';
 
 export default async function LatestInvoices() { // Remove props
   const latestInvoices = await fetchLatestInvoices();
@@ -30,7 +31,7 @@ export default async function LatestInvoices() { // Remove props
               >
                 <div className="flex items-center">
                   <Image
-                    src={invoice.image_url}
+                    src={withBasePath(invoice.image_url)}
                     alt={`${invoice.name}'s profile picture`}
                     className="mr-4 rounded-full"
                     width={32}

@@ -1,17 +1,7 @@
 import type { ComponentType } from 'react'
 
-import BasedComponent from '../components/PostEditor/PostComponents/BasedComponent'
-import SubHeading from '../components/PostPage/RenderedComponents/SubHeading'
-import Attachment from '../components/PostPage/RenderedComponents/Attachment'
-import Paragraph from '../components/PostPage/RenderedComponents/Paragraph'
-import Slideshow from '../components/PostPage/RenderedComponents/Slideshow'
-import Heading from '../components/PostPage/RenderedComponents/Heading'
-import Image from '../components/PostPage/RenderedComponents/Image'
-import Table from '../components/PostPage/RenderedComponents/Table'
-import Video from '../components/PostPage/RenderedComponents/Video'
-import List from '../components/PostPage/RenderedComponents/List'
-import Map from '../components/PostPage/RenderedComponents/Map'
-
+import SubHeading from '@/lib/components/PostPage/RenderedComponents/SubHeading'
+import Video from '@/lib/components/PostPage/RenderedComponents/Video'
 import {
   HEADING,
   VIDEO,
@@ -23,7 +13,16 @@ import {
   SLIDE_SHOW,
   MAP,
   ATTACHMENT
-} from '../constants/post-content/components'
+} from '@/lib/constants/post-content/components'
+import Table from '@/lib/components/PostPage/RenderedComponents/Table'
+import Slideshow from '@/lib/components/PostPage/RenderedComponents/Slideshow'
+import Attachment from '@/lib/components/PostPage/RenderedComponents/Attachment'
+import List from '@/lib/components/PostPage/RenderedComponents/List'
+import Paragraph from '@/lib/components/PostPage/RenderedComponents/Paragraph'
+import Heading from '@/lib/components/PostPage/RenderedComponents/Heading'
+import Map from '@/lib/components/PostPage/RenderedComponents/Map'
+import BasedComponent from '@/lib/components/PostEditor/PostComponents/BasedComponent'
+import Image from '@/lib/components/PostPage/RenderedComponents/Image'
 
 export type PostComponentType =
   | typeof HEADING

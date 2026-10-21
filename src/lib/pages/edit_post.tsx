@@ -1,6 +1,6 @@
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import EditPostEditor from "@/components/EditPostPage/EditPostEditor";
-import Container from "@/components/Container";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import EditPostEditor from "@/lib/components/EditPostPage/EditPostEditor";
+import Container from "@/lib/components/Container";
 
 export default function EditPostPage() {
   return (

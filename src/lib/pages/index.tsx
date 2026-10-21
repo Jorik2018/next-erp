@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import UnAuthenticatedLayout from '@/components/layout/UnAuthenticatedLayout';
+import UnAuthenticatedLayout from '@/lib/components/layout/UnAuthenticatedLayout';
 
 
 const IndexPage = () => (

@@ -3,13 +3,13 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
-import ClassroomHeaderPanel from "@/components/ClassroomPage/ClassroomHeaderPanel";
-import EditClassroomForm from "@/components/EditClassroomPage/EditClassroomForm";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import Container from "@/components/Container";
+import ClassroomActivityPanel from "@/lib/components/ClassroomPage/ClassroomActivityPanel";
+import ClassroomHeaderPanel from "@/lib/components/ClassroomPage/ClassroomHeaderPanel";
+import EditClassroomForm from "@/lib/components/EditClassroomPage/EditClassroomForm";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import Container from "@/lib/components/Container";
 
-import { CLASSROOM_PAGE } from "@/constants/endpoints/ui";
+import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
 
 export default function EditClassroomPage() {
   const router = useRouter();

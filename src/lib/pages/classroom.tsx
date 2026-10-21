@@ -5,16 +5,16 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import { useSelector } from "react-redux";
 
-import ClassroomHeaderPanel from "@/components/ClassroomPage/ClassroomHeaderPanel";
-import ClassroomInfoPanel from "@/components/ClassroomPage/ClassroomInfoPanel";
-import ClassroomPreview from "@/components/ClassroomPage/ClassroomPreview";
-import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import LoadingIcon from "@/components/LoadingIcon";
-import Container from "@/components/Container";
-import PostsList from "@/components/PostsList";
-import Panel from "@/components/Panel";
-import Card from "@/components/Card";
+import ClassroomHeaderPanel from "@/lib/components/ClassroomPage/ClassroomHeaderPanel";
+import ClassroomInfoPanel from "@/lib/components/ClassroomPage/ClassroomInfoPanel";
+import ClassroomPreview from "@/lib/components/ClassroomPage/ClassroomPreview";
+import ClassroomActivityPanel from "@/lib/components/ClassroomPage/ClassroomActivityPanel";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import LoadingIcon from "@/lib/components/LoadingIcon";
+import Container from "@/lib/components/Container";
+import PostsList from "@/lib/components/PostsList";
+import Panel from "@/lib/components/Panel";
+import Card from "@/lib/components/Card";
 
 interface ClassroomProfileData {
   classroomProfile: {

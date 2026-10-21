@@ -1,6 +1,6 @@
 'use client'
 
-import { REFRESH_TOKEN } from '@/constants/security'
+import { REFRESH_TOKEN } from '@/lib/constants/security'
 import { jwtDecode } from 'jwt-decode'
 
 type JwtPayload = {

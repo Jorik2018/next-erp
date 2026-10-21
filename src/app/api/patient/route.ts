@@ -7,7 +7,7 @@ import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 
 import { getAppwrite } from "@/lib/appwrite/server";
-import { APPWRITE } from "@/constants/appwrite";
+import { APPWRITE } from "@/lib/constants/appwrite";
 
 type PatientData = Record<
   string,

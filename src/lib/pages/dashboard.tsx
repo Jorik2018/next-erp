@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux'
 
 import type { RootState } from '@/lib/store'
 
-import DashboardPageHeadingPanel from '@/components/DashboardPage/DashboardPageHeadingPanel'
-import ClassroomInvitationsPanel from '@/components/DashboardPage/ClassroomInvitationsPanel'
-import AuthenticatedLayout from '@/components/layout/AuthenticatedLayout'
-import NotificationPanel from '@/components/NotificationPanel'
-import ClassroomsList from '@/components/ClassroomsList'
-import Container from '@/components/Container'
-import Panel from '@/components/Panel'
-import Card from '@/components/Card'
+import DashboardPageHeadingPanel from '@/lib/components/DashboardPage/DashboardPageHeadingPanel'
+import ClassroomInvitationsPanel from '@/lib/components/DashboardPage/ClassroomInvitationsPanel'
+import AuthenticatedLayout from '@/lib/components/layout/AuthenticatedLayout'
+import NotificationPanel from '@/lib/components/NotificationPanel'
+import ClassroomsList from '@/lib/components/ClassroomsList'
+import Container from '@/lib/components/Container'
+import Panel from '@/lib/components/Panel'
+import Card from '@/lib/components/Card'
 
 export default function DashboardPage() {
   const activeUser = useSelector(

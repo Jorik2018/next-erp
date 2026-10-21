@@ -13,8 +13,8 @@ import { createClient } from 'graphql-ws'
 import {
   GRAPHQL_ENDPOINT,
   GRAPHQL_SUBSCRIPTION_ENDPOINT
-} from '../constants/endpoints/api'
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/security'
+} from './constants/endpoints/api'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants/security'
 
 
 

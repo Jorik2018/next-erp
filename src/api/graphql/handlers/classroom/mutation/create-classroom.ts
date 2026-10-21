@@ -1,15 +1,12 @@
 import { isEmpty, trim } from "validator";
-
 import { ENG_THA_NUM_ALPHA } from "@/api/constants";
 import { requiredAuthentication } from "@/api/helpers/security-helpers";
 import { displayErrMessageWhenDev } from "@/api/helpers/error-helpers";
 import { GraphQLContext, requireUser } from "@/api/graphql/core/context";
 import {
-  ChatroomModel,
   ClassroomMemberModel,
   ClassroomModel,
 } from "@/api/models";
-import { getOrCreateMongoUser } from "@/api/services/user.service";
 
 const formatGraphQLErrorMessage = (message: string) => ({
   success: false,
@@ -32,7 +29,7 @@ const formatGraphQLErrorMessage = (message: string) => ({
  * @param { user } [GRAPHQL_CONTEXT] : Current logged-in user(used as a classroom creator)
  * @return Object : GraphQL CraeteClassroomResponse Type
  ================================================================================== */
-export default async (
+const createClassroom = async (
   _: any,
   { name, description, subject }: any,
   context: GraphQLContext,
@@ -46,7 +43,6 @@ export default async (
     const isLogin = await requiredAuthentication(user);
     if (!isLogin) return formatGraphQLErrorMessage("Authentication Required");
 
-    const mongoUser = await getOrCreateMongoUser(user);
     // ---------------------------------------------------------------------
     // All GraphQL Mutation parameters are required
     // ---------------------------------------------------------------------
@@ -84,7 +80,7 @@ export default async (
       name,
       subject,
       description,
-      creator: mongoUser._id,
+      creator: user._id,
     });
 
     // ---------------------------------------------------------------------
@@ -95,7 +91,7 @@ export default async (
     );
     await ClassroomMemberModel.create({
       classroom: newClassroom._id,
-      member: mongoUser._id,
+      member: user._id,
       role: "admin",
     });
 
@@ -109,3 +105,5 @@ export default async (
     return formatGraphQLErrorMessage("Server Error");
   }
 };
+
+export default createClassroom

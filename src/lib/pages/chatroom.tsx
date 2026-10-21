@@ -3,15 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import UserConnectionStatusPanel from "@/components/ChatroomPage/UserConnectionStatusPanel";
-import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
-import ClassroomHeaderPanel from "@/components/ClassroomPage/ClassroomHeaderPanel";
-import ChatMessagesPanel from "@/components/ChatroomPage/ChatMessagesPanel";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import Container from "@/components/Container";
-import Panel from "@/components/Panel";
+import UserConnectionStatusPanel from "@/lib/components/ChatroomPage/UserConnectionStatusPanel";
+import ClassroomActivityPanel from "@/lib/components/ClassroomPage/ClassroomActivityPanel";
+import ClassroomHeaderPanel from "@/lib/components/ClassroomPage/ClassroomHeaderPanel";
+import ChatMessagesPanel from "@/lib/components/ChatroomPage/ChatMessagesPanel";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import Container from "@/lib/components/Container";
+import Panel from "@/lib/components/Panel";
 
-import { CLASSROOM_PAGE } from "@/constants/endpoints/ui";
+import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
 
 interface ChatroomPageProps {
   isMember?: boolean;

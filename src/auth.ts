@@ -5,8 +5,8 @@ import { z } from "zod";
 
 import { authConfig } from "../auth.config";
 import { getConfig } from "@/lib/config";
-import { findMongoUserIdByAuthUserId } from "@/lib/db/mongo-users";
-import { findUserByEmail } from "./lib/db/users";
+import { findUserByEmail } from "@/lib/db/users";
+import { getOrCreateMongoUser } from "@/lib/services/user.service";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -35,43 +35,40 @@ export const {
     providers: [
       Credentials({
         async authorize(credentials) {
-          const parsedCredentials =
-            credentialsSchema.safeParse(
-              credentials
-            );
+          const parsedCredentials = credentialsSchema.safeParse(
+            credentials,
+          );
 
           if (!parsedCredentials.success) {
             return null;
           }
 
-          const { email, password } =
-            parsedCredentials.data;
+          const { email, password } = parsedCredentials.data;
 
-          const user =
-            await findUserByEmail(email);
+          const user = await findUserByEmail(email);
 
           if (!user) {
             return null;
           }
 
-          const passwordsMatch =
-            await bcrypt.compare(
-              password,
-              user.password
-            );
+          const passwordsMatch = await bcrypt.compare(
+            password,
+            user.password,
+          );
 
           if (!passwordsMatch) {
             return null;
           }
 
-          const mongoUserId =
-            await findMongoUserIdByAuthUserId(
-              user.id
-            );
+          const mongoUser = await getOrCreateMongoUser({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+          });
 
           return {
             id: user.id,
-            _id: mongoUserId,
+            _id: mongoUser._id.toString(),
             name: user.name,
             email: user.email,
           };
@@ -97,10 +94,9 @@ export const {
         if (session.user && token.sub) {
           session.user.id = token.sub;
 
-          session.user._id =
-            typeof token._id === "string"
-              ? token._id
-              : undefined;
+          session.user._id = typeof token._id === "string"
+            ? token._id
+            : undefined;
         }
 
         return session;

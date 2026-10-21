@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
-import JoinRequestPanel from "@/components/ClassroomJoinRequestPage/JoinRequestPanel";
-import ClassroomHeaderPanel from "@/components/ClassroomPage/ClassroomHeaderPanel";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import { CLASSROOM_PAGE } from "@/constants/endpoints/ui";
-import Container from "@/components/Container";
+import ClassroomActivityPanel from "@/lib/components/ClassroomPage/ClassroomActivityPanel";
+import JoinRequestPanel from "@/lib/components/ClassroomJoinRequestPage/JoinRequestPanel";
+import ClassroomHeaderPanel from "@/lib/components/ClassroomPage/ClassroomHeaderPanel";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
+import Container from "@/lib/components/Container";
 
 export default function ClassroomJoinRequestPage() {
   const router = useRouter();

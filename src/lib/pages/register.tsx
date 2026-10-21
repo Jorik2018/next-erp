@@ -1,7 +1,7 @@
-import UnAuthenticatedLayout from "@/components/layout/UnAuthenticatedLayout";
-import RegisterForm from "@/components/RegisterPage/RegisterForm";
-import Container from "@/components/Container";
-import Wallpaper from "@/components/Wallpaper";
+import UnAuthenticatedLayout from "@/lib/components/layout/UnAuthenticatedLayout";
+import RegisterForm from "@/lib/components/RegisterPage/RegisterForm";
+import Container from "@/lib/components/Container";
+import Wallpaper from "@/lib/components/Wallpaper";
 
 export default function RegisterPage() {
   return (

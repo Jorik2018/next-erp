@@ -3,13 +3,13 @@
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 
-import ProfileActivityPanel from "@/components/ProfilePage/ProfileActivityPanel";
-import ProfileInfoPanel from "@/components/ProfilePage/ProfileInfoPanel";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import LoadingIcon from "@/components/LoadingIcon";
-import Container from "@/components/Container";
-import Panel from "@/components/Panel";
-import Card from "@/components/Card";
+import ProfileActivityPanel from "@/lib/components/ProfilePage/ProfileActivityPanel";
+import ProfileInfoPanel from "@/lib/components/ProfilePage/ProfileInfoPanel";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import LoadingIcon from "@/lib/components/LoadingIcon";
+import Container from "@/lib/components/Container";
+import Panel from "@/lib/components/Panel";
+import Card from "@/lib/components/Card";
 
 interface ProfileUser {
   _id: string;

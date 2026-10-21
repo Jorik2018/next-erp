@@ -3,7 +3,7 @@
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 
-import { APPWRITE } from "@/constants/appwrite";
+import { APPWRITE } from "@/lib/constants/appwrite";
 import { getAppwrite } from "@/lib/appwrite/server";
 import { parseStringify } from "@/lib/utils";
 

@@ -5,16 +5,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import { useDispatch, useSelector } from "react-redux";
-import ClassroomMemberPanel from "@/components/ClassroomMemberPage/ClassroomMemberPanel";
-import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
-import ClassroomHeaderPanel from "@/components/ClassroomPage/ClassroomHeaderPanel";
-import ClassroomInvitationModal from "@/components/ClassroomInvitationModal";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import { CLASSROOM_PAGE } from "@/constants/endpoints/ui";
-import LoadingIcon from "@/components/LoadingIcon";
-import Container from "@/components/Container";
-import { Button } from "@/components/Button";
-import Card from "@/components/Card";
+import ClassroomMemberPanel from "@/lib/components/ClassroomMemberPage/ClassroomMemberPanel";
+import ClassroomActivityPanel from "@/lib/components/ClassroomPage/ClassroomActivityPanel";
+import ClassroomHeaderPanel from "@/lib/components/ClassroomPage/ClassroomHeaderPanel";
+import ClassroomInvitationModal from "@/lib/components/ClassroomInvitationModal";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
+import LoadingIcon from "@/lib/components/LoadingIcon";
+import Container from "@/lib/components/Container";
+import { Button } from "@/lib/components/Button";
+import Card from "@/lib/components/Card";
 import { hideClassroomInvitationModal, showClassroomInvitationModal } from "../slices/classroom-invitation-modal";
 
 interface ClassroomMembersData {

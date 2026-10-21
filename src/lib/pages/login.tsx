@@ -2,10 +2,10 @@
 
 import type { Metadata } from 'next'
 
-import LoginForm from '@/components/LoginPage/LoginForm'
-import Container from '@/components/Container'
-import Wallpaper from '@/components/Wallpaper'
-import UnAuthenticatedLayout from '@/components/layout/UnAuthenticatedLayout'
+import LoginForm from '@/lib/components/LoginPage/LoginForm'
+import Container from '@/lib/components/Container'
+import Wallpaper from '@/lib/components/Wallpaper'
+import UnAuthenticatedLayout from '@/lib/components/layout/UnAuthenticatedLayout'
 
 export const metadata: Metadata = {
   title: 'ยืนยันตัวตนเพื่อเข้าใช้งาน | LEARNSPACE',

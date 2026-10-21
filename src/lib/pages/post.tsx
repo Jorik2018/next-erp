@@ -5,8 +5,8 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import { useDispatch, useSelector } from "react-redux";
 
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import PostViewer from "@/components/PostPage/PostViewer";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import PostViewer from "@/lib/components/PostPage/PostViewer";
 import { hidePostRemovalConfirmationModal, showPostRemovalConfirmationModal } from "../slices/post-removal-confirmation-modal";
 
 interface GetPostData {

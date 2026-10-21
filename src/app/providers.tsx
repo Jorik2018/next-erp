@@ -9,7 +9,7 @@ import { ThemeProvider } from 'styled-components'
 
 import StyledComponentsRegistry from './styled-components-registry'
 
-import AuthSync from '@/components/AuthSync'
+import AuthSync from '@/lib/components/AuthSync'
 import { getApolloClient } from '@/lib/apolloClient'
 import { store } from '@/lib/store'
 import { theme } from '@/styles/theme'

@@ -2,7 +2,7 @@
 'use client'
 
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
-import { GRAPHQL_ENDPOINT } from '../constants/endpoints/api'
+import { GRAPHQL_ENDPOINT } from './constants/endpoints/api'
 
 let client: ApolloClient | null = null
 

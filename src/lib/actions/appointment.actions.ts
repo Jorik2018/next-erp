@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { ID, Query } from "node-appwrite";
 
-import { APPWRITE } from "@/constants/appwrite";
+import { APPWRITE } from "@/lib/constants/appwrite";
 import { getAppwrite } from "@/lib/appwrite/server";
 import {
   formatDateTime,

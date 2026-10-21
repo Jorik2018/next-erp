@@ -2,10 +2,10 @@
 
 import { useSearchParams } from "next/navigation";
 
-import ClassroomActivityPanel from "@/components/ClassroomPage/ClassroomActivityPanel";
-import AuthenticatedLayout from "@/components/layout/AuthenticatedLayout";
-import PostEditor from "@/components/PostEditor/PostEditor";
-import Container from "@/components/Container";
+import ClassroomActivityPanel from "@/lib/components/ClassroomPage/ClassroomActivityPanel";
+import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
+import PostEditor from "@/lib/components/PostEditor/PostEditor";
+import Container from "@/lib/components/Container";
 
 export default function CreatePostPage() {
   const searchParams = useSearchParams();

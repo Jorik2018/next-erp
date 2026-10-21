@@ -1,6 +1,8 @@
 import { getVaultSecret } from "@/lib/vault/client";
 
 export interface AppConfig {
+  authSecret: string;
+
   databaseUrl: string;
   mongoUrl: string;
   redisUrl: string;
@@ -27,67 +29,106 @@ export function getConfig(): Promise<AppConfig> {
 }
 
 async function loadConfig(): Promise<AppConfig> {
+  const databaseUrlKey =
+    `${process.env.DATABASE}_URL`;
+
+  // ============================================================
+  // DEVELOPMENT -> .env
+  // ============================================================
+
   if (process.env.NODE_ENV === "development") {
     return {
-      databaseUrl: getRequiredEnv(process.env.DATABASE+"_URL"),
-      mongoUrl: getRequiredEnv("MONGODB_URL"),
-      redisUrl: getRequiredEnv("REDIS_URL"),
+      authSecret:
+        getRequiredEnv("AUTH_SECRET"),
+
+      databaseUrl:
+        getRequiredEnv(databaseUrlKey),
+
+      mongoUrl:
+        getRequiredEnv("MONGODB_URL"),
+
+      redisUrl:
+        getRequiredEnv("REDIS_URL"),
 
       appwrite: {
-        endpoint: getRequiredEnv("APPWRITE_ENDPOINT"),
-        projectId: getRequiredEnv("APPWRITE_PROJECT_ID"),
-        apiKey: getRequiredEnv("APPWRITE_API_KEY"),
-        databaseId: getRequiredEnv("APPWRITE_DATABASE_ID"),
+        endpoint:
+          getRequiredEnv("APPWRITE_ENDPOINT"),
+
+        projectId:
+          getRequiredEnv("APPWRITE_PROJECT_ID"),
+
+        apiKey:
+          getRequiredEnv("APPWRITE_API_KEY"),
+
+        databaseId:
+          getRequiredEnv("APPWRITE_DATABASE_ID"),
       },
     };
   }
 
-  const secrets = await getVaultSecret("global");
+  // ============================================================
+  // PRODUCTION -> Vault
+  // ============================================================
 
-  console.log(getRequiredSecret(
-      secrets,
-      getRequiredEnv(process.env.DATABASE+"_URL")
-    ))
+  const secrets =
+    await getVaultSecret("global");
+
   return {
-    databaseUrl: getRequiredSecret(
-      secrets,
-      getRequiredEnv(process.env.DATABASE+"_URL")
-    ),
+    authSecret:
+      getRequiredSecret(
+        secrets,
+        "AUTH_SECRET"
+      ),
 
-    mongoUrl: getRequiredSecret(
-      secrets,
-      "MONGODB_URL"
-    ),
+    databaseUrl:
+      getRequiredSecret(
+        secrets,
+        databaseUrlKey
+      ),
 
-    redisUrl: getRequiredSecret(
-      secrets,
-      "REDIS_URL"
-    ),
+    mongoUrl:
+      getRequiredSecret(
+        secrets,
+        "MONGODB_URL"
+      ),
+
+    redisUrl:
+      getRequiredSecret(
+        secrets,
+        "REDIS_URL"
+      ),
 
     appwrite: {
-      endpoint: getRequiredSecret(
-        secrets,
-        "APPWRITE_ENDPOINT"
-      ),
+      endpoint:
+        getRequiredSecret(
+          secrets,
+          "APPWRITE_ENDPOINT"
+        ),
 
-      projectId: getRequiredSecret(
-        secrets,
-        "APPWRITE_PROJECT_ID"
-      ),
+      projectId:
+        getRequiredSecret(
+          secrets,
+          "APPWRITE_PROJECT_ID"
+        ),
 
-      apiKey: getRequiredSecret(
-        secrets,
-        "APPWRITE_API_KEY"
-      ),
-      databaseId: getRequiredSecret(
-        secrets,
-        "APPWRITE_DATABASE_ID"
-      ),
+      apiKey:
+        getRequiredSecret(
+          secrets,
+          "APPWRITE_API_KEY"
+        ),
+
+      databaseId:
+        getRequiredSecret(
+          secrets,
+          "APPWRITE_DATABASE_ID"
+        ),
     },
   };
 }
 
-function getRequiredEnv(name: string): string {
+function getRequiredEnv(
+  name: string
+): string {
   const value = process.env[name];
 
   if (!value) {

@@ -6,10 +6,23 @@ export const authConfig = {
   },
 
   callbacks: {
-    authorized({ auth, request: { nextUrl, headers } }) {
-      console.log("URL:", nextUrl.href);
-      console.log("PATH:", nextUrl.pathname);
-      console.log("COOKIE:", headers.get("cookie"));
+    authorized({ auth, request: { nextUrl, headers, url } }) {
+  console.log("URL:", url);
+  console.log("PATH:", nextUrl.pathname);
+
+  console.log("Host:",
+    headers.get("host"));
+
+  console.log("X-Forwarded-Host:",
+    headers.get("x-forwarded-host"));
+
+  console.log("X-Forwarded-Proto:",
+    headers.get("x-forwarded-proto"));
+
+  console.log("X-Forwarded-Port:",
+    headers.get("x-forwarded-port"));
+
+  console.log("AUTH:", auth);
 
       console.log("AUTH:", auth);
       const isLoggedIn = !!auth?.user;

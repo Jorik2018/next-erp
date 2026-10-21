@@ -115,34 +115,30 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    const destiny = formData.get("destiny")?.toString() || "dashboard";
+    const destiny =
+      formData.get("destiny")?.toString() || "dashboard";
 
-    const safeDestiny = /^[a-zA-Z0-9/_-]+$/.test(destiny)
-      ? destiny
-      : "dashboard";
-
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    const safeDestiny =
+      /^[a-zA-Z0-9/_-]+$/.test(destiny)
+        ? destiny
+        : "dashboard";
 
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
 
-      redirectTo: `${basePath}/${safeDestiny}`,
+      redirectTo: `/${safeDestiny}`,
     });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
           return "Invalid credentials.";
-
         default:
           return "Something went wrong.";
       }
     }
 
-    // IMPORTANTE:
-    // signIn() usa una excepción de Next para hacer el redirect.
-    // Hay que dejarla pasar.
     throw error;
   }
 }

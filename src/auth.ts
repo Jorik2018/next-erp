@@ -19,15 +19,9 @@ export const {
   signOut,
   handlers,
 } = NextAuth(async () => {
-  const config = await getConfig();
-  console.log(
-    "AUTH CONFIG LOADED:",
-    config.authSecret ? "SECRET OK" : "NO SECRET"
-  );
+
   return {
     ...authConfig,
-
-    secret: config.authSecret,
 
     trustHost: true,
 

@@ -8,6 +8,12 @@ export const authConfig = {
     signIn: "/login",
   },
 
+  session: {
+    strategy: "jwt",
+  },
+
+  providers: [],
+
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       console.log("AUTHORIZED AUTH:", auth);
@@ -19,17 +25,10 @@ export const authConfig = {
         nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/admin");
 
-      if (isProtectedRoute) {
-        return isLoggedIn;
-      }
-
-      return true;
+      return isProtectedRoute ? isLoggedIn : true;
     },
   },
-
-  providers: [],
 } satisfies NextAuthConfig;
-
 /*import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {

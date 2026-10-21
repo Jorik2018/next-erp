@@ -22,8 +22,7 @@ export function Providers({
   children
 }: ProvidersProps) {
   const client = getApolloClient()
-  const BASE_PATH = process.env.BASE_PATH;
-  console.log('BASE_PATH=',BASE_PATH);
+  const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH;
   return (
     <StyledComponentsRegistry>
       <SessionProvider basePath={BASE_PATH}>

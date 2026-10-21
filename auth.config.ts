@@ -1,18 +1,21 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
 
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      console.log('auth',auth)
+    authorized({ auth, request: { nextUrl, headers } }) {
+      console.log("URL:", nextUrl.href);
+      console.log("PATH:", nextUrl.pathname);
+      console.log("COOKIE:", headers.get("cookie"));
+
+      console.log("AUTH:", auth);
       const isLoggedIn = !!auth?.user;
 
-      const isProtectedRoute =
-        nextUrl.pathname.startsWith('/dashboard') ||
-        nextUrl.pathname.startsWith('/admin');
+      const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard") ||
+        nextUrl.pathname.startsWith("/admin");
 
       if (isProtectedRoute) {
         return isLoggedIn;
@@ -20,7 +23,7 @@ export const authConfig = {
 
       if (isLoggedIn) {
         return Response.redirect(
-          new URL('/dashboard', nextUrl)
+          new URL("/dashboard", nextUrl),
         );
       }
 

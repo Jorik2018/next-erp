@@ -23,7 +23,23 @@ export const authConfig = {
   providers: [],
 
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    authorized({ auth, request: { nextUrl ,url,headers} }) {
+
+        console.log("REQUEST URL:", url);
+  console.log("NEXT URL:", nextUrl.href);
+  console.log("ORIGIN:", nextUrl.origin);
+
+  console.log(
+    "HOST:",
+    headers.get("host"),
+  );
+
+  console.log(
+    "FORWARDED HOST:",
+    headers.get("x-forwarded-host"),
+  );
+
+
       const isLoggedIn = !!auth?.user;
 
       const isProtectedRoute =

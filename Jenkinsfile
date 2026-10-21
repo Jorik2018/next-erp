@@ -150,9 +150,11 @@ stage('Build Application') {
 
                 SET "NODE_ENV=production"
                 SET "PROD=true"
+                SET "DATABASE=PGNEONDB"
                 SET "BASE_PATH=%BASE_PATH%"
                 SET "VAULT_ADDR=%VAULT_ADDR%"
                 SET "VAULT_PATH=%VAULT_PATH%"
+
                 SET "VAULT_TOKEN=%VAULT_TOKEN%"
 
                 echo ==========================================

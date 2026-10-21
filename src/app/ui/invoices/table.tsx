@@ -3,6 +3,7 @@ import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/lib/utils';
 import { fetchFilteredInvoices } from '@/lib/data';
+import { withBasePath } from '@/lib/base-path';
 
 export default async function InvoicesTable({
   query,
@@ -27,7 +28,7 @@ export default async function InvoicesTable({
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={invoice.image_url}
+                        src={withBasePath(invoice.image_url)}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}

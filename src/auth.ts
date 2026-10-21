@@ -94,6 +94,7 @@ export const {
         session,
         token,
       }) {
+        console.log('auth.session',session,token)
         if (session.user && token.sub) {
           session.user.id = token.sub;
 

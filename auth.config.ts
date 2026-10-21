@@ -1,8 +1,8 @@
-//auth.config.ts
 import { getConfig } from "@/lib/config";
 import type { NextAuthConfig } from "next-auth";
 
 const config = await getConfig();
+
 console.log(
   "AUTH CONFIG LOADED:",
   config.authSecret ? "SECRET OK" : "NO SECRET",
@@ -11,6 +11,7 @@ console.log(
 export const authConfig = {
   trustHost: true,
   secret: config.authSecret,
+
   pages: {
     signIn: "/login",
   },
@@ -28,58 +29,11 @@ export const authConfig = {
 
       const isLoggedIn = !!auth?.user;
 
-      const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard") ||
+      const isProtectedRoute =
+        nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/admin");
 
       return isProtectedRoute ? isLoggedIn : true;
     },
   },
 } satisfies NextAuthConfig;
-/*import type { NextAuthConfig } from "next-auth";
-
-export const authConfig = {
-  pages: {
-    signIn: "/login",
-  },
-
-  callbacks: {
-    authorized({ auth, request: { nextUrl, headers, url } }) {
-  console.log("URL:", url);
-  console.log("PATH:", nextUrl.pathname);
-
-  console.log("Host:",
-    headers.get("host"));
-
-  console.log("X-Forwarded-Host:",
-    headers.get("x-forwarded-host"));
-
-  console.log("X-Forwarded-Proto:",
-    headers.get("x-forwarded-proto"));
-
-  console.log("X-Forwarded-Port:",
-    headers.get("x-forwarded-port"));
-
-  console.log("AUTH:", auth);
-
-      console.log("AUTH:", auth);
-      const isLoggedIn = !!auth?.user;
-
-      const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard") ||
-        nextUrl.pathname.startsWith("/admin");
-
-      if (isProtectedRoute) {
-        return isLoggedIn;
-      }
-
-      if (isLoggedIn) {
-        return Response.redirect(
-          new URL("/dashboard", nextUrl),
-        );
-      }
-
-      return true;
-    },
-  },
-
-  providers: [],
-} satisfies NextAuthConfig;*/

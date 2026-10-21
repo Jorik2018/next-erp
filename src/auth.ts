@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 
 import { authConfig } from "../auth.config";
-import { getConfig } from "@/lib/config";
 import { findUserByEmail } from "@/lib/db/users";
 import { getOrCreateMongoUser } from "@/lib/services/user.service";
 

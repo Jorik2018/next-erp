@@ -3,9 +3,9 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
-//import { signIn } from '@/auth';
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
+import { withBasePath } from "./base-path";
 
 export type State = {
   errors?: {
@@ -118,6 +118,7 @@ export async function authenticate(
     const destiny =
       formData.get("destiny")?.toString() || "dashboard";
 
+    // destiny debe ser una ruta interna SIN "/" inicial.
     const safeDestiny =
       /^[a-zA-Z0-9/_-]+$/.test(destiny)
         ? destiny
@@ -127,7 +128,7 @@ export async function authenticate(
       email: formData.get("email"),
       password: formData.get("password"),
 
-      redirectTo: `/${safeDestiny}`,
+      redirectTo: withBasePath(`/${safeDestiny}`),
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -139,6 +140,7 @@ export async function authenticate(
       }
     }
 
+    // El redirect de Next/Auth se lanza como excepción.
     throw error;
   }
 }

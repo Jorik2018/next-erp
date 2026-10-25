@@ -12,19 +12,13 @@ export const createAppointment = async (
 ) => {
   try {
     const { tablesDB, databaseId } = await getAppwrite();
-
     const newAppointment = await tablesDB.createRow({
       databaseId,
-
       tableId: APPWRITE.TABLES.APPOINTMENTS,
-
       rowId: ID.unique(),
-
       data: appointment,
     });
-
     revalidatePath("/admin");
-
     return parseStringify(
       newAppointment,
     );
@@ -41,15 +35,11 @@ export const createAppointment = async (
 export const getRecentAppointmentList = async () => {
   try {
     const { tablesDB, databaseId } = await getAppwrite();
-
     const appointments = await tablesDB.listRows({
       databaseId,
-
       tableId: APPWRITE.TABLES.APPOINTMENTS,
-
       queries: [
         Query.orderDesc("schedule"),
-
         // Trae también el Patient relacionado
         Query.select([
           "*",

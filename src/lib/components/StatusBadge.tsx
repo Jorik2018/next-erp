@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Image from "next/image";
 
 import { StatusIcon } from "@/lib/constants";
+import { withBasePath } from "../base-path";
 
 export const StatusBadge = ({ status }: { status: Status }) => {
   return (
@@ -15,7 +16,7 @@ export const StatusBadge = ({ status }: { status: Status }) => {
 
     >
       <Image
-        src={StatusIcon[status]}
+        src={withBasePath(StatusIcon[status])}
         alt="doctor"
         width={24}
         height={24}

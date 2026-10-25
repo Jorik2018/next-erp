@@ -42,7 +42,21 @@ export function getAppwrite(): Promise<AppwriteServer> {
 
 async function createAppwrite(): Promise<AppwriteServer> {
   const config = await getConfig();
-
+  console.log("APPWRITE CONFIG", {
+    endpoint: config.appwrite.endpoint,
+    projectId:
+      config.appwrite.projectId
+        ? "OK"
+        : "MISSING",
+    apiKey:
+      config.appwrite.apiKey
+        ? "OK"
+        : "MISSING",
+    databaseId:
+      config.appwrite.databaseId
+        ? "OK"
+        : "MISSING",
+  });
   const client = new Client()
     .setEndpoint(config.appwrite.endpoint)
     .setProject(config.appwrite.projectId)

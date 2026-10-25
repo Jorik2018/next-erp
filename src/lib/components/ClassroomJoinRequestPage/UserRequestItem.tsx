@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import Card, { Body } from '../Card'
-import { CircleButton } from '../Button'
+import { CircleButton } from '@/lib/ui/button'
 
 const UserRequestItemCard = styled(Card)`
   margin-left: 1.5em;

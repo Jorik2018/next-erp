@@ -1,0 +1,120 @@
+import { equals, isEmail, isEmpty, trim, isAlphanumeric } from 'validator'
+import bcrypt from 'bcrypt'
+import { ENG_THA_NUM_ALPHA, PASSWORD_PATTERN } from '@/lib/api/constants'
+import { displayErrMessageWhenDev } from '@/lib/helpers/error-helpers'
+import { GraphQLContext } from "@/lib/api/graphql/core/context";
+
+
+const formatGraphQLErrorMessage = (message:string) => ({
+  success: false,
+  user: null,
+  err: {
+    name: 'register',
+    message
+  }
+})
+
+/** ==================================================================================
+ * @name register()
+ * @type resolver
+ * @desc Create a new user with a given information
+ * @param parent : default parameter from ApolloServer
+ * @param { username } [GRAPHQL_ARGS] : User's username
+ * @param { fname } [GRAPHQL_ARGS] : User's firstname
+ * @param { lname } [GRAPHQL_ARGS] : User's lastname(Not required)
+ * @param { email } [GRAPHQL_ARGS] : User's email
+ * @param { password } [GRAPHQL_ARGS] : User's password(Must be at least >= 8 chars)
+ * @param { models } [GRAPHQL_CONTEXT] : Mongoose Model
+ * @return Object : GraphQL RegisterResponse Type
+ ================================================================================== */
+const register = async (_:any, { fname, lname, email, password, username }:any, 
+  { models }:GraphQLContext) => {
+  try {
+    // =========================================================
+    // Inputs Validation
+    // =========================================================
+    if (
+      isEmpty(trim(username)) ||
+      isEmpty(trim(fname)) ||
+      isEmpty(trim(email)) ||
+      isEmpty(trim(lname)) ||
+      isEmpty(trim(password))
+    ) {
+      return formatGraphQLErrorMessage('Important credentials should not be empty')
+    }
+
+    // Email format Validation
+    if (!isEmail(email) || email.length > 250)
+      return formatGraphQLErrorMessage('Email is not valid')
+
+    // Username must contains only ENG alphabets and must be only 1 - 30 characters
+    if (!isAlphanumeric(username) || username.length > 50)
+      return formatGraphQLErrorMessage('Username is not valid')
+
+    // Firstname must contains only ENG or THA alphabets and must be only 1 - 50 characters
+    if (!ENG_THA_NUM_ALPHA.test(fname) || fname.length > 50)
+      return formatGraphQLErrorMessage('Firstname is not valid')
+
+    // Lastname must contains only ENG or THA alphabets and must be only 1 - 50 characters
+    if (!ENG_THA_NUM_ALPHA.test(lname) || lname.length > 50)
+      return formatGraphQLErrorMessage('Lastname is not valid')
+
+    // Password may contain anything and must have a length between 8 - 55 characters
+    if (!PASSWORD_PATTERN.test(password) || password.length > 55)
+      return formatGraphQLErrorMessage('Password is not valid')
+
+    // Password Validation
+    if (password.length < 8)
+      return formatGraphQLErrorMessage('Password is too weak, must be >= 8, but <= 250 characters')
+
+    // =========================================================
+    // Checking wether user is already exists
+    // =========================================================
+    const userWithTheSameCreds = await models.User.findOne({
+      $or: [{ email: email }, { username: username }]
+    }).lean()
+
+    // =========================================================
+    // User email and username must be unique. So, we're checking for a conflict
+    // =========================================================
+    if (userWithTheSameCreds) {
+      // Email conflict
+      if (equals(userWithTheSameCreds.email, email))
+        return formatGraphQLErrorMessage('User already exist with the given email')
+
+      // Username conflict
+      if (equals(userWithTheSameCreds.username, username))
+        return formatGraphQLErrorMessage('User already exist with the given username')
+    }
+
+    // =========================================================
+    // Encrypt Password
+    // =========================================================
+    const salt = await bcrypt.genSaltSync(12)
+    const hashedPassword = await bcrypt.hashSync(password, salt)
+
+    // =========================================================
+    // Saving new user
+    // =========================================================
+    const user = await models.User.create({
+      username,
+      fname,
+      lname,
+      email,
+      password: hashedPassword
+    })
+
+    // =========================================================
+    // Return appropriete GraphQL response
+    // =========================================================
+    return {
+      success: true,
+      user
+    }
+  } catch (err) {
+    displayErrMessageWhenDev(err)
+    return formatGraphQLErrorMessage('Server Error')
+  }
+}
+
+export default register;

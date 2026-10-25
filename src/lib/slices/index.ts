@@ -1,3 +1,4 @@
+// src/lib/slices/index.ts
 import { combineReducers } from "@reduxjs/toolkit";
 
 import classroomInvitationModal from "./classroom-invitation-modal";

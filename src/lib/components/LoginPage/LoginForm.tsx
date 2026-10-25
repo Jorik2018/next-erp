@@ -18,10 +18,10 @@ import { DASHBOARD_PAGE } from '../../constants/endpoints/ui'
 
 import Card, { Header, Body } from '../Card'
 import { InputField } from '../Form'
-import { Button } from '../Button'
 import { hideLoadingModal, showLoadingModal } from '@/lib/slices/mutation-status'
 import { showErrorAlert } from '@/lib/slices/error-alert'
 import { initializeAuthenticatedUser } from '@/lib/slices/user'
+import { Button } from '@/lib/ui/button'
 
 interface LoginFormValues {
   email: string

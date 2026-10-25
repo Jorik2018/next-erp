@@ -1,7 +1,7 @@
 import {
   renderPostComponent,
   type PostComponent,
-} from "@/helpers/post";
+} from "@/lib/helpers/post";
 
 import {
   ModalBackground,
@@ -13,8 +13,8 @@ import {
   Body,
   Footer,
 } from "@/lib/components/Card";
+import { Button } from "@/lib/ui/button";
 
-import { Button } from "@/lib/components/Button";
 
 interface PostPreviewModalProps {
   receipe: PostComponent[];

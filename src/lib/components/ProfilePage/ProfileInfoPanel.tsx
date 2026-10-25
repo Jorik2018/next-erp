@@ -44,23 +44,25 @@ const ProfileImage = styled.img`
   width: 250px;
   border: none;
 `
+
 interface ProfileInfoPanelProp {
-  email?: string,
-  career?: string,
-  address?: string,
-  username?: string,
-  realName?: string,
+  email?: string
+  career?: string
+  address?: string
+  username?: string
+  realName?: string
   profilePicture?: string
 }
+
 /**
  * @name ProfileInfoPanel
- * @desc Display individial user specific information
- * @prop { realName } : user's real firstname contactinated with his/her lastname
+ * @desc Display individual user-specific information
+ * @prop { realName } : user's real first name concatenated with his/her last name
  * @prop { username } : user's username
  * @prop { email } : user's email
- * @prop { address } : user's location(not required)
- * @prop { career } : user's occupation(not required)
- * @prop { profilePicture } : User Profile picture
+ * @prop { address } : user's location (not required)
+ * @prop { career } : user's occupation (not required)
+ * @prop { profilePicture } : user's profile picture
  */
 const ProfileInfoPanel = ({
   email,
@@ -69,17 +71,31 @@ const ProfileInfoPanel = ({
   realName,
   username,
   profilePicture
-}:ProfileInfoPanelProp) => (
+}: ProfileInfoPanelProp) => (
   <ProfileInfoPanelCard>
     <ProfileImage src={profilePicture} />
+
     <ProfileInfoContainer>
       <ProfileInfoDetails>
         <UserFullName>{realName}</UserFullName>
+
         <Seperator />
-        <UserInfoItem>ชื่อผู้ใช้ : {username || 'ไม่ได้กำหนด'}</UserInfoItem>
-        <UserInfoItem>อีเมลล์ : {email || 'ไม่ได้กำหนด'}</UserInfoItem>
-        <UserInfoItem>ที่อยู่ : {address || 'ไม่ได้กำหนด'}</UserInfoItem>
-        <UserInfoItem>อาชีพ : {career || 'ไม่ได้กำหนด'}</UserInfoItem>
+
+        <UserInfoItem>
+          Username: {username || 'Not specified'}
+        </UserInfoItem>
+
+        <UserInfoItem>
+          Email: {email || 'Not specified'}
+        </UserInfoItem>
+
+        <UserInfoItem>
+          Address: {address || 'Not specified'}
+        </UserInfoItem>
+
+        <UserInfoItem>
+          Career: {career || 'Not specified'}
+        </UserInfoItem>
       </ProfileInfoDetails>
     </ProfileInfoContainer>
   </ProfileInfoPanelCard>

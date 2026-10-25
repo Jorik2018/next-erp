@@ -14,7 +14,7 @@ const ClassroomMemberPanel = ({
   classroomMembers
 }: ClassroomMemberPanelProps) => (
   <FullContainerCard
-    header="สมาชิก"
+    header="Members"
     $marginTop="2em"
     $marginBottom="7em"
   >

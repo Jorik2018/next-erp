@@ -7,7 +7,7 @@ import { IMAGE } from "@/lib/constants/post-content/components";
 import type { PostComponentEditorProps } from "@/types/post-component-editor";
 import { Form, InputField } from "@/lib/components/Form";
 import { Body, Footer, Header } from "@/lib/components/Card";
-import { Button } from "@/lib/components/Button";
+import { Button } from "@/lib/ui/button";
 
 const ImageUploadWrapper = styled.div`
   height: 250px;

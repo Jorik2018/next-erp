@@ -1,7 +1,9 @@
 import {
+  AppwriteException,
   Client,
   TablesDB,
-  AppwriteException,
+  RelationshipType,
+  RelationMutate,
 } from "node-appwrite";
 
 const DATABASE_ID = process.env.APPWRITE_DATABASE_ID!;
@@ -17,10 +19,6 @@ const client = new Client()
   .setKey(process.env.APPWRITE_API_KEY!);
 
 const tablesDB = new TablesDB(client);
-
-/* -------------------------------------------------------------------------- */
-/*                                  Helpers                                   */
-/* -------------------------------------------------------------------------- */
 
 async function tableExists(tableId: string) {
   try {
@@ -51,7 +49,7 @@ async function createPatientsTable() {
 
   if (exists) {
     console.log(
-      `✓ Patients already exists: ${TABLES.PATIENTS}`
+      `✓ Patients already exists: ${TABLES.PATIENTS}`,
     );
 
     return;
@@ -68,6 +66,12 @@ async function createPatientsTable() {
         type: "varchar",
         size: 64,
         required: true,
+      },
+      {
+        key: "authUserId",
+        type: "varchar",
+        size: 128,
+        required: false,
       },
       {
         key: "name",
@@ -211,12 +215,12 @@ async function createPatientsTable() {
 
 async function createAppointmentsTable() {
   const exists = await tableExists(
-    TABLES.APPOINTMENTS
+    TABLES.APPOINTMENTS,
   );
 
   if (exists) {
     console.log(
-      `✓ Appointments already exists: ${TABLES.APPOINTMENTS}`
+      `✓ Appointments already exists: ${TABLES.APPOINTMENTS}`,
     );
 
     return;
@@ -228,12 +232,7 @@ async function createAppointmentsTable() {
     name: "Appointments",
 
     columns: [
-      {
-        key: "patientId",
-        type: "varchar",
-        size: 64,
-        required: true,
-      },
+
       {
         key: "userId",
         type: "varchar",
@@ -282,11 +281,7 @@ async function createAppointmentsTable() {
     ],
 
     indexes: [
-      {
-        key: "idx_appointment_patient",
-        type: "key",
-        attributes: ["patientId"],
-      },
+
       {
         key: "idx_appointment_user",
         type: "key",
@@ -308,14 +303,58 @@ async function createAppointmentsTable() {
   console.log("✓ Appointments created");
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   Main                                     */
-/* -------------------------------------------------------------------------- */
+async function createPatientAppointmentsRelationship() {
+  console.log(
+    "Creating Patient -> Appointments relationship...",
+  );
+
+  try {
+    await tablesDB.createRelationshipColumn({
+      databaseId: DATABASE_ID,
+
+      // Patient
+      tableId: TABLES.PATIENTS,
+
+      // Appointment
+      relatedTableId: TABLES.APPOINTMENTS,
+
+      // Patient 1 -> N Appointments
+      type: RelationshipType.OneToMany,
+
+      twoWay: true,
+
+      // Patient.appointments
+      key: "appointments",
+
+      // Appointment.patient
+      twoWayKey: "patient",
+
+      onDelete: RelationMutate.Restrict,
+    });
+
+    console.log(
+      "✓ Patient/Appointments relationship created",
+    );
+  } catch (error) {
+    if (
+      error instanceof AppwriteException &&
+      error.code === 409
+    ) {
+      console.log(
+        "✓ Patient/Appointments relationship already exists",
+      );
+
+      return;
+    }
+
+    throw error;
+  }
+}
 
 async function main() {
   if (!DATABASE_ID) {
     throw new Error(
-      "APPWRITE_DATABASE_ID is not defined"
+      "APPWRITE_DATABASE_ID is not defined",
     );
   }
 
@@ -327,6 +366,7 @@ async function main() {
 
   await createPatientsTable();
   await createAppointmentsTable();
+  await createPatientAppointmentsRelationship();
 
   console.log();
   console.log("================================");
@@ -339,7 +379,7 @@ async function main() {
 
   for (const table of tables.tables) {
     console.log(
-      `- ${table.name} (${table.$id})`
+      `- ${table.name} (${table.$id})`,
     );
   }
 }

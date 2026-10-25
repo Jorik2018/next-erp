@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import Card, { Body } from '../Card'
-import { CircleButton } from '../Button'
+import { CircleButton } from '@/lib/ui/button'
 
 const MemberItemCard = styled(Card)`
   margin-left: 1.5em;
@@ -53,7 +53,6 @@ const MemberItem = ({
     )}
 
     <CircleButton
-      $danger
       $position="absolute"
       $top="1em"
       $right="1em"

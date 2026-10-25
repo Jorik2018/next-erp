@@ -1,5 +1,5 @@
 
-import { Button } from '../Button'
+import { Button } from '@/lib/ui/button'
 import { Body, Footer, Header } from '../Card'
 import { ModalBackground, ModalPanel } from '../Modal'
 import PostComponentItem from './PostComponentItem'
@@ -17,6 +17,12 @@ import {
   LIST,
   MAP
 } from '@/lib/constants/post-content/components'
+import { PostComponentType } from '@/lib/helpers/post'
+
+interface ComponentOption {
+  type: PostComponentType
+  name: string
+}
 
 const components = [
   { type: HEADING, name: 'Heading' },
@@ -27,14 +33,19 @@ const components = [
   { type: VIDEO, name: 'Video' },
   { type: MAP, name: 'Map' },
   { type: TABLE, name: 'Table' },
-  { type: SLIDE_SHOW, name: 'Image Slideshow' },
-  { type: ATTACHMENT, name: 'Attachment' }
-]
-
+  {
+    type: SLIDE_SHOW,
+    name: 'Image Slideshow'
+  },
+  {
+    type: ATTACHMENT,
+    name: 'Attachment'
+  }
+] satisfies ComponentOption[]
 interface PostComponentsSelectorModalProps {
   isComponentsSelectorModalShowing: boolean
   hideComponentsSelectorModal: () => void
-  showAddPostComponentModal: (type: string) => void
+  showAddPostComponentModal: (type: PostComponentType) => void
 }
 
 /**

@@ -1,9 +1,9 @@
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
-import { lusitana } from '@/app/ui/fonts';
+import RevenueChart from '@/lib/ui/dashboard/revenue-chart';
+import LatestInvoices from '@/lib/ui/dashboard/latest-invoices';
+import { lusitana } from '@/lib/ui/fonts';
 import { Suspense } from 'react';
-import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
-import CardWrapper from '@/app/ui/dashboard/cards';
+import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/lib/ui/skeletons';
+import CardWrapper from '@/lib/ui/dashboard/cards';
 
 export const dynamic = 'force-dynamic';
 

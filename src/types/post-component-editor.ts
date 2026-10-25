@@ -1,10 +1,16 @@
 // src/types/post-component-editor.ts
 
-import type { PostComponentType } from "@/helpers/post";
+import type {
+  PostComponentType,
+} from "@/lib/helpers/post";
 
 interface BasePostComponentEditorProps {
   order: number;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                    Add                                     */
+/* -------------------------------------------------------------------------- */
 
 export interface AddPostComponentEditorProps<
   TData,
@@ -21,6 +27,10 @@ export interface AddPostComponentEditorProps<
   }) => void;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                    Edit                                    */
+/* -------------------------------------------------------------------------- */
+
 export interface EditPostComponentEditorProps<
   TData,
   TType extends PostComponentType,
@@ -36,6 +46,10 @@ export interface EditPostComponentEditorProps<
   }) => void;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                            Component editor props                           */
+/* -------------------------------------------------------------------------- */
+
 export type PostComponentEditorProps<
   TData,
   TType extends PostComponentType,
@@ -43,8 +57,15 @@ export type PostComponentEditorProps<
   | AddPostComponentEditorProps<TData, TType>
   | EditPostComponentEditorProps<TData, TType>;
 
+/* -------------------------------------------------------------------------- */
+/*                         Dynamic registry contracts                          */
+/* -------------------------------------------------------------------------- */
 
-
+export interface AddPostComponentPayload {
+  data: unknown;
+  type: PostComponentType;
+  order: number;
+}
 
 export interface EditPostComponentPayload {
   newData: unknown;
@@ -52,10 +73,23 @@ export interface EditPostComponentPayload {
   order: number;
 }
 
-export interface CommonEditPostComponentProps {
+export interface CommonAddPostComponentProps
+  extends BasePostComponentEditorProps {
+  useToAddComponent: true;
+
+  hideAddPostComponentModal: () => void;
+
+  addNewPostComponent: (
+    component: AddPostComponentPayload
+  ) => void;
+}
+
+export interface CommonEditPostComponentProps
+  extends BasePostComponentEditorProps {
   useToAddComponent: false;
-  order: number;
+
   hideEditPostComponentModal: () => void;
+
   editPostComponent: (
     component: EditPostComponentPayload
   ) => void;

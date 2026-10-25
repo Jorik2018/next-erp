@@ -1,50 +1,59 @@
-// src/store/slices/editPostComponentModalSlice.ts
+import {
+  createSlice,
+  type PayloadAction
+} from '@reduxjs/toolkit'
 
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import type {
+  PostComponentType
+} from '@/lib/helpers/post'
+import { PARAGRAPH } from '../constants/post-content/components'
 
-export type EditPostComponentModalState = {
+export interface EditPostComponentModalState {
   isShowing: boolean
-  type?: string
-  order?: number
+  type: PostComponentType
+  order: number
+}
+
+interface ShowEditPostComponentModalPayload {
+  type: PostComponentType
+  order: number
 }
 
 const initialState: EditPostComponentModalState = {
   isShowing: false,
-  type: undefined,
-  order: undefined,
+  type: 'PARAGRAPH',
+  order: 0
 }
 
-type ShowEditPostComponentModalPayload = {
-  type: string
-  order: number
-}
+const editPostComponentModalSlice =
+  createSlice({
+    name: 'editPostComponentModal',
 
-const editPostComponentModalSlice = createSlice({
-  name: 'editPostComponentModal',
+    initialState,
 
-  initialState,
+    reducers: {
+      showEditPostComponentModal: (
+        state,
+        action: PayloadAction<
+          ShowEditPostComponentModalPayload
+        >
+      ) => {
+        state.isShowing = true
+        state.type = action.payload.type
+        state.order = action.payload.order
+      },
 
-  reducers: {
-    showEditPostComponentModal: (
-      state,
-      action: PayloadAction<ShowEditPostComponentModalPayload>,
-    ) => {
-      state.isShowing = true
-      state.type = action.payload.type
-      state.order = action.payload.order
-    },
-
-    hideEditPostComponentModal: state => {
-      state.isShowing = false
-      state.type = undefined
-      state.order = undefined
-    },
-  },
-})
+      hideEditPostComponentModal: state => {
+        state.isShowing = false
+        state.type = PARAGRAPH
+        state.order = 0
+      }
+    }
+  })
 
 export const {
   showEditPostComponentModal,
-  hideEditPostComponentModal,
+  hideEditPostComponentModal
 } = editPostComponentModalSlice.actions
 
 export default editPostComponentModalSlice.reducer

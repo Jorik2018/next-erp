@@ -1,9 +1,5 @@
 'use client'
 
-import { useSelector } from 'react-redux'
-
-import type { RootState } from '@/lib/store'
-
 import DashboardPageHeadingPanel from '@/lib/components/DashboardPage/DashboardPageHeadingPanel'
 import ClassroomInvitationsPanel from '@/lib/components/DashboardPage/ClassroomInvitationsPanel'
 import AuthenticatedLayout from '@/lib/components/layout/AuthenticatedLayout'
@@ -13,10 +9,13 @@ import Container from '@/lib/components/Container'
 import Panel from '@/lib/components/Panel'
 import Card from '@/lib/components/Card'
 
+import { useAppSelector } from '@/lib/store/hooks'
+
 export default function DashboardPage() {
-  const activeUser = useSelector(
-    (state: RootState) => state.user
+  const activeUser = useAppSelector(
+    state => state.user
   )
+
   return (
     <AuthenticatedLayout>
       <Container>
@@ -28,8 +27,13 @@ export default function DashboardPage() {
             backgroundColor: '#dfdfdf'
           }}
         >
-          <Card $padding="2em" $textCenter>
-            <h3>Student Analysis is coming soon</h3>
+          <Card
+            $padding="2em"
+            $textCenter
+          >
+            <h3>
+              Student Analysis is coming soon
+            </h3>
           </Card>
         </div>
 
@@ -41,14 +45,20 @@ export default function DashboardPage() {
             backgroundColor: 'transparent'
           }}
         >
-          <Panel $left $width={40}>
+          <Panel
+            $left
+            $width={40}
+          >
             <NotificationPanel />
           </Panel>
 
-          <Panel $right $width={60}>
+          <Panel
+            $right
+            $width={60}
+          >
             <DashboardPageHeadingPanel />
-{JSON.stringify(activeUser)}
-            {activeUser?._id && (
+
+            {activeUser._id && (
               <ClassroomsList
                 _id={activeUser._id}
                 height="600px"
@@ -64,9 +74,9 @@ export default function DashboardPage() {
             backgroundColor: 'transparent'
           }}
         >
-          {activeUser?.id && (
+          {activeUser._id && (
             <ClassroomInvitationsPanel
-              userID={activeUser._id!}
+              userID={activeUser._id}
             />
           )}
         </div>

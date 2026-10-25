@@ -88,11 +88,14 @@ const CLASSROOM_PROFILE_QUERY = gql`
   }
 `;
 
-export default function ClassroomPage() {
-  const searchParams = useSearchParams();
+interface ClassroomPageProps {
+  classroomID: string
+}
+
+export default function ClassroomPage({classroomID}:ClassroomPageProps) {
   const activeUser = useSelector((state: RootState) => state.user);
 
-  const id = searchParams.get("id");
+  const id = classroomID;
 
   const { data, loading } = useQuery<
     ClassroomProfileData,

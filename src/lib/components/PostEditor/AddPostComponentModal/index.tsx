@@ -1,42 +1,6 @@
 import { ModalBackground, ModalPanel } from '@/lib/components/Modal'
 import AddPostComponentDetailForm from './AddPostComponentDetailForm'
-
-
-import {
-  SUB_HEADING,
-  SLIDE_SHOW,
-  ATTACHMENT,
-  PARAGRAPH,
-  HEADING,
-  TABLE,
-  IMAGE,
-  VIDEO,
-  LIST,
-  MAP
-} from '@/lib/constants/post-content/components'
-
-type PostComponentType =
-  | typeof HEADING
-  | typeof SUB_HEADING
-  | typeof PARAGRAPH
-  | typeof IMAGE
-  | typeof LIST
-  | typeof VIDEO
-  | typeof MAP
-  | typeof TABLE
-  | typeof SLIDE_SHOW
-  | typeof ATTACHMENT
-
-interface PostComponent {
-  type: PostComponentType
-  order: number
-  data: unknown
-}
-
-interface AddPostComponentModalState {
-  isShowing: boolean
-  type?: PostComponentType
-}
+import { AddPostComponentModalState, PostComponent } from '@/lib/helpers/post'
 
 interface AddPostComponentModalProps {
   hideAddPostComponentModal: () => void
@@ -70,4 +34,4 @@ const AddPostComponentModal = ({
   </ModalBackground>
 )
 
-export default AddPostComponentModal
+export default AddPostComponentModal       

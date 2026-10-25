@@ -1,0 +1,17 @@
+import EditPostPage from "@/lib/pages/edit_post";
+
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function Page({
+  params,
+}: PageProps) {
+  const { id } = await params;
+
+  return (
+    <EditPostPage postID={id} />
+  );
+}

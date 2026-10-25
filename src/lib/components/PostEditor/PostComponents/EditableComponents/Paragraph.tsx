@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 
 import { PARAGRAPH } from "@/lib/constants/post-content/components";
 import type { PostComponentEditorProps } from "@/types/post-component-editor";
-import { Button } from "@/lib/components/Button";
 import { Form, TextAreaField } from "@/lib/components/Form";
 import { Body, Footer, Header } from "@/lib/components/Card";
+import { Button } from "@/lib/ui/button";
 
 interface ParagraphFormValues {
   paragraph_text: string;

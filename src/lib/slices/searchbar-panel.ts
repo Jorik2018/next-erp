@@ -1,4 +1,4 @@
-// src/store/slices/searchPanelSlice.ts
+// src/lib/slices/searchbar-panel.ts
 
 import { createSlice } from '@reduxjs/toolkit'
 

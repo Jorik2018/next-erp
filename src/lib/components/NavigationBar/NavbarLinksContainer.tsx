@@ -1,18 +1,14 @@
 import styled from 'styled-components'
 
 const NavbarLinksContainer = styled.ul`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
   margin: 0;
   padding: 0;
+
   list-style: none;
-  @media (max-width: 900px) {
-    display: block;
-    /* width: 100%; */
-    /* background-color: blue; */
-    /* li {
-      display: none;
-    } */
-  }
 `
 
 export default NavbarLinksContainer

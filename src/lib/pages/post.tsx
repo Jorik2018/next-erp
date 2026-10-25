@@ -1,91 +1,63 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/client/react";
-import { useDispatch, useSelector } from "react-redux";
-
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
 import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
 import PostViewer from "@/lib/components/PostPage/PostViewer";
-import { hidePostRemovalConfirmationModal, showPostRemovalConfirmationModal } from "../slices/post-removal-confirmation-modal";
-
-interface GetPostData {
-  getPost: {
-    post: {
-      title: string;
-      recipe: string;
-      comments?: PostComment[];
-    } | null;
-    err: {
-      message: string;
-    } | null;
-  };
+import {
+  hidePostRemovalConfirmationModal,
+  showPostRemovalConfirmationModal,
+} from "@/lib/slices/post-removal-confirmation-modal";
+import { RootState } from "../initRedux";
+import { useGetPost } from "@/lib/api/client/post/use-get-post";
+interface PostPageProps {
+  postID: string;
 }
 
-interface GetPostVariables {
-  _id: string;
-}
-
-interface RootState {
-  postRemovalConfirmationModal: boolean;
-}
-
-const GET_POST_QUERY = gql`
-  query GetPost($_id: String!) {
-    getPost(_id: $_id) {
-      post {
-        title
-        recipe
-        comments {
-          message
-          creator {
-            _id
-            fname
-            profilePicture
-          }
-          subComments {
-            message
-            creator {
-              _id
-              fname
-              profilePicture
-            }
-          }
-        }
-      }
-      err {
-        message
-      }
-    }
-  }
-`;
-
-export default function PostPage() {
-  const searchParams = useSearchParams();
+export default function PostPage({
+  postID,
+}: PostPageProps) {
   const dispatch = useDispatch();
 
-  const postID = searchParams.get("id");
+  const isPostRMModalShowing =
+    useSelector(
+      (state: RootState) =>
+        state.postRemovalConfirmationModal
+    );
 
-  const isPostRMModalShowing = useSelector(
-    (state: RootState) => state.postRemovalConfirmationModal
-  );
+  const {
+    data,
+    loading,
+    error,
+  } = useGetPost(postID);
 
-  const { data, loading } = useQuery<
-    GetPostData,
-    GetPostVariables
-  >(GET_POST_QUERY, {
-    variables: {
-      _id: postID ?? "",
-    },
-    skip: !postID,
-  });
-
-  const post = data?.getPost?.post;
-
-  if (!postID) {
+  if (error) {
     return (
       <AuthenticatedLayout>
-        <p>Post ID was not specified.</p>
+        <p>
+          Unable to load the post.
+        </p>
+      </AuthenticatedLayout>
+    );
+  }
+
+  const post =
+    data?.getPost?.post;
+
+  const graphQLError =
+    data?.getPost?.err;
+
+  if (
+    !loading &&
+    graphQLError
+  ) {
+    return (
+      <AuthenticatedLayout>
+        <p>
+          {graphQLError.message}
+        </p>
       </AuthenticatedLayout>
     );
   }
@@ -96,14 +68,28 @@ export default function PostPage() {
         postID={postID}
         loading={loading}
         hidePostRMModal={() =>
-          dispatch(hidePostRemovalConfirmationModal())
+          dispatch(
+            hidePostRemovalConfirmationModal()
+          )
         }
         showPostRMModal={() =>
-          dispatch(showPostRemovalConfirmationModal())
+          dispatch(
+            showPostRemovalConfirmationModal()
+          )
         }
-        isPostRMModalShowing={isPostRMModalShowing}
-        recipe={!loading && post ? post.recipe : null}
-        comments={!loading && post ? post?.comments : undefined}
+        isPostRMModalShowing={
+          isPostRMModalShowing
+        }
+        recipe={
+          !loading && post
+            ? post.recipe
+            : null
+        }
+        comments={
+          !loading && post
+            ? post.comments
+            : undefined
+        }
       />
     </AuthenticatedLayout>
   );

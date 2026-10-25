@@ -16,26 +16,26 @@ import {
 import { getAppointmentSchema } from "@/lib/validation";
 import { Appointment } from "@/types/appwrite.types";
 
-import "react-datepicker/dist/react-datepicker.css";
-
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { Form } from "../ui/form";
 
 export const AppointmentForm = ({
   userId,
-  patientId,
+  patient,
   type = "create",
   appointment,
   setOpen,
 }: {
   userId: string;
-  patientId: string;
+  patient: string;
   type: "create" | "schedule" | "cancel";
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }) => {
+
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const AppointmentFormValidation = getAppointmentSchema(type);
@@ -71,10 +71,10 @@ export const AppointmentForm = ({
     }
 
     try {
-      if (type === "create" && patientId) {
+      if (type === "create" && patient) {
         const appointment = {
           userId,
-          patient: patientId,
+          patient,
           primaryPhysician: values.primaryPhysician,
           schedule: new Date(values.schedule),
           reason: values.reason!,
@@ -141,23 +141,14 @@ export const AppointmentForm = ({
         )}
 
         {type !== "cancel" && (
-          /**Type 'Control<{ schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }, any, { ...; } | ... 1 more ... | { ...' is not assignable to type 'Control<any>'.
-  The types of '_options.validate' are incompatible between these types.
-    Type 'ValidateForm<{ schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }> | undefined' is not assignable to type 'ValidateForm<any> | undefined'.
-      Type 'ValidateForm<{ schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }>' is not assignable to type 'ValidateForm<any>'.
-        Types of parameters 'props' and 'props' are incompatible.
-          Type '{ formValues: any; formState: FormState<any>; eventType?: ValidateFormEventType | undefined; name?: string | string[] | undefined; }' is not assignable to type '{ formValues: { schedule: Date; primaryPhysician: string; reason: string; note?: string | undefined; cancellationReason?: string | undefined; } | { schedule: Date; primaryPhysician: string; cancellationReason: string; reason?: string | undefined; note?: string | undefined; } | { ...; }; formState: FormState<...>; ev...'.
-            Types of property 'name' are incompatible.
-              Type 'string | string[] | undefined' is not assignable to type '"schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason" | ("schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason")[] | undefined'.
-                Type 'string' is not assignable to type '"schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason" | ("schedule" | "primaryPhysician" | "reason" | "note" | "cancellationReason")[] | undefined'.
-CustomFormField.tsx(29, 3): The expected type comes from property 'control' which is declared here on type 'IntrinsicAttributes & CustomProps' */
           <>
             <CustomFormField
               fieldType={FormFieldType.SELECT}
-              
+
               control={form.control}
               name="primaryPhysician"
               label="Doctor"
+
               placeholder="Select a doctor"
             >
               {Doctors.map((doctor, i) => (

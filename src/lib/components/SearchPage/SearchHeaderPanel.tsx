@@ -38,7 +38,6 @@ const SearchHeaderPanel = ({
     <SearchHeaderPanelHeading>
       Search results for
     </SearchHeaderPanelHeading>
-
     <SearchQuery>
       {searchQuery}
     </SearchQuery>

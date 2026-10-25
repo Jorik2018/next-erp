@@ -14,7 +14,6 @@ interface ContainerProps {
  * @desc Wrap all components so everything is properly centered
  */
 const Container = styled.div<ContainerProps>`
-  padding-top: 2.5em;
   padding-bottom: 0;
   padding-left: 0;
   padding-right: 0;
@@ -24,8 +23,7 @@ const Container = styled.div<ContainerProps>`
   margin-bottom: ${({ $marginBottom }) => $marginBottom || '0'};
   margin-left: ${({ $marginLeft }) => $marginLeft || 'auto'};
   margin-right: ${({ $marginRight }) => $marginRight || 'auto'};
-
-  max-width: 1400px;
+  
   width: 100%;
   height: auto;
 

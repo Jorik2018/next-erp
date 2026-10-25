@@ -5,9 +5,9 @@ import styled from "styled-components";
 
 import { SLIDE_SHOW } from "@/lib/constants/post-content/components";
 import type { PostComponentEditorProps } from "@/types/post-component-editor";
-import { Button, CircleButton } from "@/lib/components/Button";
 import { Form, Input } from "@/lib/components/Form";
 import { Body, Footer, Header } from "@/lib/components/Card";
+import { Button, CircleButton } from "@/lib/ui/button";
 
 const ImageUploadWrapper = styled.div`
   height: 250px;

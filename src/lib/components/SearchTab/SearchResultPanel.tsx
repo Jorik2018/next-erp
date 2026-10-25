@@ -1,11 +1,6 @@
 import SearchResultCard from "./SearchResultCard";
 import SearchResultItem from "./SearchResultItem";
 
-/**
- *  @name SearchResultPanel
- *  @desc Navbar search result panel to display the search results as a list of items
- *  @param show : the state of navbar search result panel apearence
- */
 const SearchResultPanel = ({ show }:SearchResultPanelProp) => (
   <SearchResultCard show={show}>
     <SearchResultItem name="Tony Stark" />

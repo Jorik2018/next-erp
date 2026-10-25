@@ -5,10 +5,7 @@ import { ID, Query } from "node-appwrite";
 
 import { APPWRITE } from "@/lib/constants/appwrite";
 import { getAppwrite } from "@/lib/appwrite/server";
-import {
-  formatDateTime,
-  parseStringify,
-} from "@/lib/utils";
+import { formatDateTime, parseStringify } from "@/lib/utils";
 import type { Appointment } from "@/types/appwrite.types";
 
 type AppointmentRow = Appointment & {
@@ -17,152 +14,118 @@ type AppointmentRow = Appointment & {
   $updatedAt: string;
 };
 
-/* -------------------------------------------------------------------------- */
-/*                             Create Appointment                             */
-/* -------------------------------------------------------------------------- */
-
 export const createAppointment = async (
-  appointment: CreateAppointmentParams
+  appointment: CreateAppointmentParams,
 ) => {
   try {
-    const { tablesDB } =
-      await getAppwrite();
+    const { tablesDB } = await getAppwrite();
 
-    const newAppointment =
-      await tablesDB.createRow({
-        databaseId:
-          APPWRITE.DATABASE_ID,
+    const newAppointment = await tablesDB.createRow({
+      databaseId: APPWRITE.DATABASE_ID,
 
-        tableId:
-          APPWRITE.TABLES.APPOINTMENTS,
+      tableId: APPWRITE.TABLES.APPOINTMENTS,
 
-        rowId: ID.unique(),
+      rowId: ID.unique(),
 
-        data: appointment,
-      });
+      data: appointment,
+    });
 
     revalidatePath("/admin");
 
     return parseStringify(
-      newAppointment
+      newAppointment,
     );
   } catch (error) {
     console.error(
       "An error occurred while creating a new appointment:",
-      error
+      error,
     );
 
     throw error;
   }
 };
 
-/* -------------------------------------------------------------------------- */
-/*                         Get Recent Appointments                            */
-/* -------------------------------------------------------------------------- */
+export const getRecentAppointmentList = async () => {
+  try {
+    const { tablesDB } = await getAppwrite();
 
-export const getRecentAppointmentList =
-  async () => {
-    try {
-      const { tablesDB } =
-        await getAppwrite();
+    const appointments = await tablesDB.listRows({
+      databaseId: APPWRITE.DATABASE_ID,
 
-      const appointments =
-        await tablesDB.listRows({
-          databaseId:
-            APPWRITE.DATABASE_ID,
+      tableId: APPWRITE.TABLES.APPOINTMENTS,
 
-          tableId:
-            APPWRITE.TABLES.APPOINTMENTS,
+      queries: [
+        Query.orderDesc("schedule"),
 
-          queries: [
-            Query.orderDesc("$createdAt"),
-          ],
-        });
+        // Trae también el Patient relacionado
+        Query.select([
+          "*",
+          "patient.*",
+        ]),
+      ],
+    });
 
-      /*
-       * Appwrite's generic DefaultRow doesn't know
-       * the application-specific Appointment schema.
-       */
-      const rows =
-        appointments.rows as unknown as AppointmentRow[];
+    const documents = appointments.rows as unknown as Appointment[];
 
-      const counts = rows.reduce(
-        (acc, appointment) => {
-          switch (appointment.status) {
-            case "scheduled":
-              acc.scheduledCount++;
-              break;
+    const scheduledCount = documents.filter(
+      (appointment) =>
+        appointment.status ===
+          "scheduled",
+    ).length;
 
-            case "pending":
-              acc.pendingCount++;
-              break;
+    const pendingCount = documents.filter(
+      (appointment) =>
+        appointment.status ===
+          "pending",
+    ).length;
 
-            case "cancelled":
-              acc.cancelledCount++;
-              break;
-          }
+    const cancelledCount = documents.filter(
+      (appointment) =>
+        appointment.status ===
+          "cancelled",
+    ).length;
 
-          return acc;
-        },
-        {
-          scheduledCount: 0,
-          pendingCount: 0,
-          cancelledCount: 0,
-        }
-      );
+    return parseStringify({
+      totalCount: documents.length,
 
-      return parseStringify({
-        totalCount: appointments.total,
+      scheduledCount,
+      pendingCount,
+      cancelledCount,
 
-        ...counts,
+      documents,
+    });
+  } catch (error) {
+    console.error(
+      "Unable to retrieve appointments:",
+      error,
+    );
 
-        documents: rows,
-      });
-    } catch (error) {
-      console.error(
-        "An error occurred while retrieving recent appointments:",
-        error
-      );
+    throw error;
+  }
+};
 
-      throw error;
-    }
-  };
+export const sendSMSNotification = async (
+  userId: string,
+  content: string,
+) => {
+  try {
+    const { messaging } = await getAppwrite();
+    const message = await messaging.createSMS({
+      messageId: ID.unique(),
+      content,
+      users: [userId],
+    });
 
-/* -------------------------------------------------------------------------- */
-/*                            SMS Notification                                */
-/* -------------------------------------------------------------------------- */
+    return parseStringify(message);
+  } catch (error) {
+    console.error(
+      "An error occurred while sending SMS:",
+      error,
+    );
 
-export const sendSMSNotification =
-  async (
-    userId: string,
-    content: string
-  ) => {
-    try {
-      const { messaging } =
-        await getAppwrite();
-
-      const message =
-        await messaging.createSms(
-          ID.unique(),
-          content,
-          [],
-          [userId]
-        );
-
-      return parseStringify(message);
-    } catch (error) {
-      console.error(
-        "An error occurred while sending SMS:",
-        error
-      );
-
-      throw error;
-    }
-  };
-
-/* -------------------------------------------------------------------------- */
-/*                            Update Appointment                              */
-/* -------------------------------------------------------------------------- */
+    throw error;
+  }
+};
 
 export const updateAppointment = async ({
   appointmentId,
@@ -171,84 +134,151 @@ export const updateAppointment = async ({
   type,
 }: UpdateAppointmentParams) => {
   try {
-    const { tablesDB } =
-      await getAppwrite();
+    const { tablesDB } = await getAppwrite();
 
-    const updatedAppointment =
-      await tablesDB.updateRow({
-        databaseId:
-          APPWRITE.DATABASE_ID,
+    // 1. Actualizar la cita
+    const updatedAppointment = await tablesDB.updateRow({
+      databaseId: APPWRITE.DATABASE_ID,
 
-        tableId:
-          APPWRITE.TABLES.APPOINTMENTS,
+      tableId: APPWRITE.TABLES.APPOINTMENTS,
 
-        rowId: appointmentId,
+      rowId: appointmentId,
 
-        data: appointment,
-      });
+      data: appointment,
+    });
 
-    const schedule =
-      appointment.schedule;
+    // 2. SMS es un efecto secundario.
+    // Si falla, NO debe fallar la actualización.
+    const schedule = appointment.schedule;
 
     if (schedule) {
-      const formattedDate =
-        formatDateTime(schedule).dateTime;
+      const formattedDate = formatDateTime(schedule).dateTime;
 
-      const smsMessage =
-        type === "schedule"
-          ? `Greetings from CarePulse. Your appointment is confirmed for ${formattedDate} with Dr. ${appointment.primaryPhysician}.`
-          : `We regret to inform that your appointment for ${formattedDate} is cancelled. Reason: ${appointment.cancellationReason ?? "Not specified"}.`;
+      const smsMessage = type === "schedule"
+        ? `Greetings from CarePulse. Your appointment is confirmed for ${formattedDate} with Dr. ${appointment.primaryPhysician}.`
+        : `We regret to inform that your appointment for ${formattedDate} is cancelled. Reason: ${
+          appointment.cancellationReason ??
+            "Not specified"
+        }.`;
 
-      await sendSMSNotification(
-        userId,
-        smsMessage
-      );
+      try {
+        await sendSMSNotification(
+          userId,
+          smsMessage,
+        );
+      } catch (smsError) {
+        console.warn(
+          "Appointment updated successfully, but SMS notification failed:",
+          smsError,
+        );
+      }
     }
 
+    // 3. Refrescar admin
     revalidatePath("/admin");
 
+    // Podemos refrescar también las citas
+    // del paciente actual.
+    revalidatePath(
+      `/patients/${userId}/appointments`,
+    );
+
     return parseStringify(
-      updatedAppointment
+      updatedAppointment,
     );
   } catch (error) {
     console.error(
       "An error occurred while updating an appointment:",
-      error
+      error,
     );
 
     throw error;
   }
 };
 
-/* -------------------------------------------------------------------------- */
-/*                              Get Appointment                               */
-/* -------------------------------------------------------------------------- */
-
 export const getAppointment = async (
-  appointmentId: string
+  appointmentId: string,
 ) => {
   try {
-    const { tablesDB } =
-      await getAppwrite();
+    const { tablesDB } = await getAppwrite();
 
-    const appointment =
-      await tablesDB.getRow({
-        databaseId:
-          APPWRITE.DATABASE_ID,
+    const appointment = await tablesDB.getRow({
+      databaseId: APPWRITE.DATABASE_ID,
 
-        tableId:
-          APPWRITE.TABLES.APPOINTMENTS,
+      tableId: APPWRITE.TABLES.APPOINTMENTS,
 
-        rowId: appointmentId,
-      });
+      rowId: appointmentId,
+    });
 
     return parseStringify(
-      appointment
+      appointment,
     );
   } catch (error) {
     console.error(
       "An error occurred while retrieving the appointment:",
-      error
+      error,
+    );
+
+    throw error;
+  }
+};
+
+export const getAppointmentsByUser = async (
+  userId: string,
+) => {
+  try {
+    const { tablesDB } = await getAppwrite();
+
+    const appointments = await tablesDB.listRows({
+      databaseId: APPWRITE.DATABASE_ID,
+
+      tableId: APPWRITE.TABLES.APPOINTMENTS,
+
+      queries: [
+        Query.equal(
+          "userId",
+          [userId],
+        ),
+        Query.orderDesc("schedule"),
+      ],
+    });
+
+    return parseStringify(
+      appointments.rows,
+    );
+  } catch (error) {
+    console.error(
+      "Unable to retrieve user appointments:",
+      error,
+    );
+
+    throw error;
+  }
+};
+
+export const getAllAppointments = async () => {
+  try {
+    const { tablesDB } = await getAppwrite();
+
+    const appointments = await tablesDB.listRows({
+      databaseId: APPWRITE.DATABASE_ID,
+
+      tableId: APPWRITE.TABLES.APPOINTMENTS,
+
+      queries: [
+        Query.orderDesc(
+          "schedule",
+        ),
+      ],
+    });
+
+    return parseStringify(
+      appointments.rows,
+    );
+  } catch (error) {
+    console.error(
+      "Unable to retrieve appointments:",
+      error,
     );
 
     throw error;

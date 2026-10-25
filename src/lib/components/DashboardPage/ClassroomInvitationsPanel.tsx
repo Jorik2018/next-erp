@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux'
 import ClassroomInvitationItem from './ClassroomInvitationItem'
 import Card, { Header, Body, Footer } from '../Card'
 import LoadingIcon from '../LoadingIcon'
-import { Button } from '../Button'
 
 import {
   hideLoadingModal,
@@ -16,6 +15,7 @@ import {
 } from '@/lib/slices/mutation-status'
 
 import { showErrorAlert } from '@/lib/slices/error-alert'
+import { Button } from '@/lib/ui/button'
 
 const ClassroomInvitationPanelCard = styled(Card)`
   height: 650px;
@@ -157,11 +157,11 @@ const ClassroomInvitationsPanel = ({
       </Body>
 
       <Footer>
-        <Button $primary>
+        <Button>
           Accept All
         </Button>
 
-        <Button $light $marginLeft="1em">
+        <Button>
           Reject All
         </Button>
       </Footer>

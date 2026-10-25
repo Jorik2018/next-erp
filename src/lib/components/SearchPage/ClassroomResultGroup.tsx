@@ -32,7 +32,7 @@ const ClassroomResultGroup = () => (
     <ClassroomResult>
       <ResultTitle>Introduction to Computer Science</ResultTitle>
     </ClassroomResult>
-  </SearchResultGroup>
+  </SearchResultGroup> 
 );
 
 export default ClassroomResultGroup;

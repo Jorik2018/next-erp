@@ -1,5 +1,5 @@
 
-import { renderPostComponent } from '@/helpers/post'
+import { renderPostComponent } from '@/lib/helpers/post'
 import PostContentWrapper from './PostContentWrapper'
 
 interface PostContentProp {

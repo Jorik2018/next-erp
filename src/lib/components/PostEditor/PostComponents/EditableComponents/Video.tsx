@@ -5,8 +5,8 @@ import { z } from "zod";
 
 import { VIDEO } from "@/lib/constants/post-content/components";
 import { Form } from "@/lib/components/Form";
-import { Button } from "@/lib/components/Button";
 import { Body, Footer, Header } from "@/lib/components/Card";
+import { Button } from "@/lib/ui/button";
 
 const videoSchema = z.object({
   video_url: z

@@ -1,22 +1,31 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import {
+  type ChangeEvent,
+  type FormEvent,
+  useState
+} from 'react'
 import { useRouter } from 'next/navigation'
-import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-
-import type { RootState, AppDispatch } from '@/lib/store'
 
 import SearchResultPanel from './SearchResultPanel'
 import SearchField from './SearchField'
-import { Button } from '../Button'
 
 import {
   showSearchPanel,
   hideSearchPanel
 } from '@/lib/slices/searchbar-panel'
 
-import { SEARCH_RESULT_PAGE } from '@/lib/constants/endpoints/ui'
+import {
+  useAppDispatch,
+  useAppSelector
+} from '@/lib/store/hooks'
+
+import {
+  SEARCH_RESULT_PAGE
+} from '@/lib/constants/endpoints/ui'
+
+import { Button } from '@/lib/ui/button'
 
 const SearchTabForm = styled.form`
   display: inline;
@@ -29,13 +38,12 @@ const SearchTabForm = styled.form`
 
 const SearchTab = () => {
   const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useAppDispatch()
 
-  const isSearchPanelShowing = useSelector(
-    (state: RootState) => state.searchPanel
-  )
+  const isSearchPanelShowing = useAppSelector(state => state.searchBarPanel)
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] =
+    useState('')
 
   const handleFocus = () => {
     if (!isSearchPanelShowing) {
@@ -43,7 +51,21 @@ const SearchTab = () => {
     }
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleBlur = () => {
+    if (isSearchPanelShowing) {
+      dispatch(hideSearchPanel())
+    }
+  }
+
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearch(event.target.value)
+  }
+
+  const handleSubmit = (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault()
 
     const query = search.trim()
@@ -55,28 +77,39 @@ const SearchTab = () => {
     dispatch(hideSearchPanel())
 
     router.push(
-      `${SEARCH_RESULT_PAGE}?q=${encodeURIComponent(query)}`
+      `${SEARCH_RESULT_PAGE}?q=${encodeURIComponent(
+        query
+      )}`
     )
   }
 
   return (
-    <SearchTabForm onSubmit={handleSubmit}>
-      <div style={{ display: 'inline-block' }}>
+    <SearchTabForm
+      onSubmit={handleSubmit}
+    >
+      <div
+        style={{
+          display: 'inline-block'
+        }}
+      >
         <SearchField
           value={search}
-          onChange={(event:any) => setSearch(event.target.value)}
+          onChange={handleChange}
           onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder="Search for anything"
           name="navbar_search"
           type="text"
         />
-
         <SearchResultPanel
           show={isSearchPanelShowing}
         />
       </div>
 
-      <Button $light type="submit">
+      <Button
+        $light
+        type="submit"
+      >
         Search
       </Button>
     </SearchTabForm>

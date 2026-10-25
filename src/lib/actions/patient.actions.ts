@@ -7,10 +7,6 @@ import { APPWRITE } from "@/lib/constants/appwrite";
 import { getAppwrite } from "@/lib/appwrite/server";
 import { parseStringify } from "@/lib/utils";
 
-/* -------------------------------------------------------------------------- */
-/*                              Create Appwrite User                          */
-/* -------------------------------------------------------------------------- */
-
 export const createUser = async (
   user: CreateUserParams
 ) => {
@@ -53,10 +49,6 @@ export const createUser = async (
     throw error;
   }
 };
-
-/* -------------------------------------------------------------------------- */
-/*                                  Get User                                  */
-/* -------------------------------------------------------------------------- */
 
 export const getUser = async (
   userId: string
@@ -138,16 +130,6 @@ export const registerPatient = async ({
       }
     }
 
-    const identificationDocumentUrl =
-      identificationDocumentId
-        ? buildDocumentUrl({
-            endpoint,
-            projectId,
-            fileId:
-              identificationDocumentId,
-          })
-        : null;
-
     const newPatient =
       await tablesDB.createRow({
         databaseId:
@@ -162,8 +144,6 @@ export const registerPatient = async ({
           ...patient,
 
           identificationDocumentId,
-
-          identificationDocumentUrl,
         },
       });
 
@@ -188,9 +168,7 @@ export const getPatient = async (
   userId: string
 ) => {
   try {
-    const { tablesDB } =
-      await getAppwrite();
-
+    const { tablesDB } = await getAppwrite();
     const patients =
       await tablesDB.listRows({
         databaseId:

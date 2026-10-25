@@ -4,8 +4,8 @@ import { CLASSROOM_CHATROOM_PAGE } from '../../constants/endpoints/ui'
 import { NotificationItem } from '../NotificationPanel'
 import { ModalBackground, ModalPanel } from '../Modal'
 import { Header, Body, Footer } from '../Card'
-import { Button } from '../Button'
-import { hideChatroomModal, showChatroomModal } from '@/lib/slices/chatroom-modal'
+import { hideChatroomModal } from '@/lib/slices/chatroom-modal'
+import { Button } from '@/lib/ui/button'
 
 // hide this modal if the current url is /chatroom?c=???
 const ChatroomModal = () => {
@@ -31,7 +31,7 @@ const ChatroomModal = () => {
         ))}
       </Body>
       <Footer>
-        <Button $light onClick={() => dispatch(hideChatroomModal())}>
+        <Button onClick={() => dispatch(hideChatroomModal())}>
           ปิด
         </Button>
       </Footer>
@@ -39,12 +39,4 @@ const ChatroomModal = () => {
   </ModalBackground>
 }
 
-const mapStateToProps = (state: any) => ({
-  isModalShowing: state.chatroomModal
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  showModal: () => dispatch(showChatroomModal()),
-  hideModal: () => dispatch(hideChatroomModal())
-})
 export default ChatroomModal

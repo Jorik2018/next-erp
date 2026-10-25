@@ -4,10 +4,10 @@ import Link from "next/link";
 import ActivityPanel from "../ActivityPanel";
 import {
   CREATE_POST_PAGE,
-  EDIT_CLASSROOM_PAGE,
   CLASSROOM_MEMBER_PAGE,
   CLASSROOM_CHATROOM_PAGE,
   CLASSROOM_JOIN_REQUEST_PAGE,
+  CLASSROOM_PAGE,
 } from "@/lib/constants/endpoints/ui";
 
 interface AdminOnlyProps {
@@ -59,8 +59,7 @@ const ClassroomActivityPanel = ({
       <AdminOnly {...adminProps}>
         <Link
           href={{
-            pathname: EDIT_CLASSROOM_PAGE,
-            query: { id: classroomID },
+            pathname: `${CLASSROOM_PAGE}/${classroomID}/edit`
           }}
         >
           Edit Classroom
@@ -69,8 +68,7 @@ const ClassroomActivityPanel = ({
 
       <Link
         href={{
-          pathname: CLASSROOM_MEMBER_PAGE,
-          query: { id: classroomID },
+          pathname: `${CLASSROOM_PAGE}/${classroomID}/member`
         }}
       >
         Members
@@ -79,8 +77,7 @@ const ClassroomActivityPanel = ({
       <AdminOnly {...adminProps}>
         <Link
           href={{
-            pathname: CLASSROOM_JOIN_REQUEST_PAGE,
-            query: { id: classroomID },
+            pathname: `${CLASSROOM_PAGE}/${classroomID}/join`
           }}
         >
           Join Requests

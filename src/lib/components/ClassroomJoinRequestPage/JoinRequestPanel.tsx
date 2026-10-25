@@ -10,7 +10,7 @@ const JoinRequestPanel = () => (
   <FullContainerCard
     $marginTop="1em"
     $marginBottom="7em"
-    header="คำขอเข้าร่วม"
+    header="Join Requests"
   >
     {Array.from({ length: 8 }).map((_, index) => (
       <UserRequestItem

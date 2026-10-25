@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 
-import { handler } from "@/api/graphql/next-handler";
+import { handler } from "@/lib/api/graphql/next-handler";
 
 export async function GET(
   request: NextRequest

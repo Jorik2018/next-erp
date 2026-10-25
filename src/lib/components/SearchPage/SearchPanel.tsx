@@ -3,17 +3,13 @@
 import { useForm } from 'react-hook-form'
 
 import { Form, Input } from '../Form'
-import { Button } from '../Button'
 import Card from '../Card'
+import { Button } from '@/lib/ui/button'
 
 interface SearchFormValues {
   query: string
 }
 
-/**
- * @name SearchPanel
- * @desc Allows the user to search using advanced search tools.
- */
 const SearchPanel = () => {
   const { register, handleSubmit } = useForm<SearchFormValues>({
     defaultValues: {
@@ -39,13 +35,7 @@ const SearchPanel = () => {
         />
 
         <Button
-          $light
-          $textCenter
-          $fluidWidth
-          $marginTop="1em"
-          $marginBottom="0"
-          $marginLeft="auto"
-          $marginRight="auto"
+         
           type="submit"
         >
           Search

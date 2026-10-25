@@ -5,7 +5,8 @@
     "dev": "next dev --turbopack",
     "start": "next start",
     "lint": "eslint .",
-    "db:migrate": "tsx scripts/migrate.ts"
+    "db:migrate": "tsx scripts/migrate.ts",
+    "setup-appwrite.ts": "tsx scripts/setup-appwrite.ts"
   },
   "dependencies": {
     "@apollo/client": "^4.3.3",
@@ -26,6 +27,7 @@
     "@sentry/nextjs": "^11.8.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tanstack/react-table": "^9.3.1",
+    "appwrite": "^29.1.0",
     "autoprefixer": "10.4.20",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",

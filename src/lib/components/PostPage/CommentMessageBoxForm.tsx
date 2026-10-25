@@ -1,5 +1,5 @@
+import { Button } from '@/lib/ui/button'
 import { Form, TextArea } from '../Form'
-import { Button } from '../Button'
 
 /**
  * @name CommentMessageForm
@@ -16,7 +16,7 @@ const CommentMessageForm = () => (
     />
 
     <Button $primary $textCenter $fluidWidth>
-      ส่ง
+      Send
     </Button>
   </Form>
 )

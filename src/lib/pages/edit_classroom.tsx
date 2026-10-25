@@ -11,12 +11,14 @@ import Container from "@/lib/components/Container";
 
 import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
 
-export default function EditClassroomPage() {
+interface EditClassroomPageProps {
+  classroomID: string
+}
+
+export default function EditClassroomPage({ classroomID }: EditClassroomPageProps) {
   const router = useRouter();
 
-  // Temporary mocked data from the original getInitialProps.
   const isMember = true;
-  const classroomID = "1";
   const classroomName = "Introduction to Computer Science";
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function EditClassroomPage() {
         <EditClassroomForm />
       </Container>
 
-      <ClassroomActivityPanel classroomID={classroomID}/>
+      <ClassroomActivityPanel classroomID={classroomID} />
     </AuthenticatedLayout>
   );
 }

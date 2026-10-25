@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import { Button } from '../../Button'
 import Card from '../../Card'
+import { Button } from '@/lib/ui/button'
 
 const AttachmentCard = styled(Card)`
   max-width: 400px;

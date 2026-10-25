@@ -10,7 +10,7 @@ import {
   InputLabel,
 } from "@/lib/components/Form";
 import { Body, Footer, Header } from "@/lib/components/Card";
-import { Button, CircleButton } from "@/lib/components/Button";
+import { Button, CircleButton } from "@/lib/ui/button";
 
 interface ListItem {
   id: string;

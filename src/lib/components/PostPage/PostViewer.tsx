@@ -40,7 +40,7 @@ const PostViewer = ({
       <PostContent recipe={recipe} />
       <PostCommentsPanel comments={comments} />
       <CommentMessageBox />
-      <PostActivityPanel showPostRMModal={showPostRMModal} />
+      <PostActivityPanel postId={postID} showPostRMModal={showPostRMModal} />
       <PostRemovalConfirmationModal
         postID={postID}
         isPostRMModalShowing={isPostRMModalShowing}

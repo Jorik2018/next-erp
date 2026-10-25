@@ -5,10 +5,10 @@ import { useMutation } from '@apollo/client/react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
-import { CLASSROOM_PAGE } from '../../constants/endpoints/ui'
 import Card, { Header, Body } from '../Card'
 import { InputField } from '../Form'
-import { Button } from '../Button'
+import { CLASSROOM_PAGE } from '@/lib/constants/endpoints/ui'
+import { Button } from '@/lib/ui/button'
 
 interface CreateClassroomFormValues {
   name: string
@@ -155,9 +155,6 @@ const CreateClassroomForm = () => {
           />
 
           <Button
-            $primary
-            $fluidWidth
-            $textCenter
             type="submit"
             disabled={isSubmitting}
           >

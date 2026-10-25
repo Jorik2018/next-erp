@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { NotificationItem } from './NotificationPanel'
 import { ModalBackground, ModalPanel } from './Modal'
 import { Header, Body, Footer } from './Card'
-import { Button } from './Button'
 import { hideNotificationModal } from '@/lib/slices/notification-modal'
+import { Button } from '../ui/button'
 
 interface RootState {
   notificationModal: boolean

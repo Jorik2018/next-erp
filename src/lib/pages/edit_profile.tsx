@@ -10,4 +10,5 @@ export default function EditProfilePage() {
       </Container>
     </AuthenticatedLayout>
   );
+  
 }

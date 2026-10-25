@@ -14,7 +14,7 @@ const UserStatusPanelCard = styled(Card)`
  */
 const UserConnectionStatusPanel = () => (
   <UserStatusPanelCard>
-    <Header>สมาชิกที่ออนใลน์อยู่</Header>
+    <Header>Online Members</Header>
 
     <Body $overflowY="scroll" $height="600px">
       <MemberItem username="Tony Stark" isOnline />

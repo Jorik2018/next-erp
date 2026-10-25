@@ -4,10 +4,10 @@ import { gql } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { Button } from '../Button'
 import Card from '../Card'
 import { showErrorAlert } from '@/lib/slices/error-alert'
 import { hideLoadingModal, showLoadingModal } from '@/lib/slices/mutation-status'
+import { Button } from '@/lib/ui/button'
 
 const ClassroomPreviewWrapper = styled(Card)`
   text-align: center;
@@ -114,7 +114,7 @@ const ClassroomPreview = ({
         dispatch(
           showErrorAlert(
             result?.err?.message ??
-              'Unable to send the classroom join request.'
+            'Unable to send the classroom join request.'
           )
         )
 
@@ -157,7 +157,6 @@ const ClassroomPreview = ({
 
       {!didJoinReqSent ? (
         <Button
-          $primary
           type="button"
           onClick={sendClassroomJoinRequest}
         >

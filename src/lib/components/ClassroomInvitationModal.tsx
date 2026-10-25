@@ -6,8 +6,8 @@ import { useMutation } from '@apollo/client/react'
 
 import { ModalBackground, ModalPanel } from './Modal'
 import { Header, Body, Footer } from './Card'
-import { Button } from './Button'
 import { InputGroup } from './Form'
+import { Button } from '../ui/button'
 
 const INVITE_USER_MUTATION = gql`
   mutation inviteUser(

@@ -1,21 +1,32 @@
 import Link from "next/link";
 
 import ActivityPanel from "../ActivityPanel";
-import { EDIT_POST_PAGE } from "@/lib/constants/endpoints/ui";
+import { POST_PAGE } from "@/lib/constants/endpoints/ui";
 
-interface PostActivityPanelProp {
-  showPostRMModal: any
-};
+interface PostActivityPanelProps {
+  postId: string;
+  showPostRMModal: () => void;
+}
 
-const PostActivityPanel = ({ showPostRMModal }: PostActivityPanelProp) => (
+const PostActivityPanel = ({
+  postId,
+  showPostRMModal,
+}: PostActivityPanelProps) => (
   <ActivityPanel>
     <Link
-      href={{ pathname: EDIT_POST_PAGE, query: { id: "1525651231" } }}
-      prefetch
+      href={{
+        pathname: `${POST_PAGE}/${postId}/edit`,
+      }}
     >
-      <a>แก้ไขเนื้อหาโพส</a>
+      Edit Post
     </Link>
-    <a onClick={() => showPostRMModal()}>ลบโพส</a>
+
+    <button
+      type="button"
+      onClick={showPostRMModal}
+    >
+      Delete Post
+    </button>
   </ActivityPanel>
 );
 

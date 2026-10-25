@@ -13,50 +13,69 @@ import {
 import { Appointment } from "@/types/appwrite.types";
 
 import { AppointmentForm } from "./forms/AppointmentForm";
+import { Button } from "../ui/button";
 
-import "react-datepicker/dist/react-datepicker.css";
-import { Button } from "./Button";
-
-export const AppointmentModal = ({
-  patientId,
-  userId,
-  appointment,
-  type,
-}: {
-  patientId: string;
+interface AppointmentModalProps {
+  patient: string;
   userId: string;
   appointment?: Appointment;
   type: "schedule" | "cancel";
   title: string;
   description: string;
-}) => {
-  const [open, setOpen] = useState(false);
+}
+
+export const AppointmentModal = ({
+  patient,
+  userId,
+  appointment,
+  type,
+  title,
+  description,
+}: AppointmentModalProps) => {
+  const [open, setOpen] =
+    useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
         <Button
+          type="button"
           variant="ghost"
-          className={`capitalize ${type === "schedule" && "text-green-500"}`}
+          className={
+            type === "schedule"
+              ? "text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+              : "text-red-600 hover:bg-red-50 hover:text-red-700"
+          }
         >
-          {type}
+          {type === "schedule"
+            ? "Schedule"
+            : "Cancel"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="shad-dialog sm:max-w-md">
-        <DialogHeader className="mb-4 space-y-3">
-          <DialogTitle className="capitalize">{type} Appointment</DialogTitle>
+
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>
+            {title}
+          </DialogTitle>
+
           <DialogDescription>
-            Please fill in the following details to {type} appointment
+            {description}
           </DialogDescription>
         </DialogHeader>
 
-        <AppointmentForm
-          userId={userId}
-          patientId={patientId}
-          type={type}
-          appointment={appointment}
-          setOpen={setOpen}
-        />
+        <div className="mt-5">
+          <AppointmentForm
+            userId={userId}
+            patient={patient}
+            type={type}
+            appointment={appointment}
+            setOpen={setOpen}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );

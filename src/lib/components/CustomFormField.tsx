@@ -133,8 +133,8 @@ const RenderInput = <
             withCountryCallingCode
             value={
               field.value as
-                | E164Number
-                | undefined
+              | E164Number
+              | undefined
             }
             onChange={field.onChange}
             className="input-phone"
@@ -183,21 +183,21 @@ const RenderInput = <
               value={
                 field.value
                   ? new Date(field.value)
-                      .toISOString()
-                      .slice(
-                        0,
-                        props.showTimeSelect
-                          ? 16
-                          : 10
-                      )
+                    .toISOString()
+                    .slice(
+                      0,
+                      props.showTimeSelect
+                        ? 16
+                        : 10
+                    )
                   : ""
               }
               onChange={(event) =>
                 field.onChange(
                   event.target.value
                     ? new Date(
-                        event.target.value
-                      )
+                      event.target.value
+                    )
                     : undefined
                 )
               }
@@ -208,30 +208,29 @@ const RenderInput = <
         </div>
       );
 
-    case FormFieldType.SELECT:
-      return (
-        <FormControl>
-          <Select
-            onValueChange={field.onChange}
-            value={field.value ?? ""}
-          >
-            <FormControl>
-              <SelectTrigger className="shad-select-trigger">
-                <SelectValue
-                  placeholder={
-                    props.placeholder
-                  }
-                />
-              </SelectTrigger>
-            </FormControl>
+      case FormFieldType.SELECT:
+  return (
+    <Select
+      onValueChange={field.onChange}
+      value={
+        typeof field.value === "string"
+          ? field.value
+          : ""
+      }
+    >
+      <FormControl>
+        <SelectTrigger>
+          <SelectValue
+            placeholder={props.placeholder}
+          />
+        </SelectTrigger>
+      </FormControl>
 
-            <SelectContent className="shad-select-content">
-              {props.children}
-            </SelectContent>
-          </Select>
-        </FormControl>
-      );
-
+      <SelectContent>
+        {props.children}
+      </SelectContent>
+    </Select>
+  );
     case FormFieldType.SKELETON:
       return props.renderSkeleton
         ? props.renderSkeleton(field)

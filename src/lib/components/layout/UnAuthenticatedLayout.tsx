@@ -1,14 +1,13 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { useSelector } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
-
-import type { RootState } from '@/lib/store'
 
 import UnAuthenticatedNav from '../NavigationBar/UnAuthenticatedNav'
 import LoadingScreenModal from '../LoadingScreenModal'
 import { ErrorAlert } from '../Alert'
+
+import { useAppSelector } from '@/lib/store/hooks'
 import defaultTheme from '@/themes/default'
 
 interface UnAuthenticatedLayoutProps {
@@ -21,18 +20,20 @@ interface UnAuthenticatedLayoutProps {
 export default function UnAuthenticatedLayout({
   children
 }: UnAuthenticatedLayoutProps) {
-  const isMutating = useSelector(
-    (state: RootState) => state.mutationStatus
+  const isMutating = useAppSelector(
+    state => state.mutationStatus
   )
 
-  const errorAlert = useSelector(
-    (state: RootState) => state.errorAlert
+  const errorAlert = useAppSelector(
+    state => state.errorAlert
   )
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <div>
-        <LoadingScreenModal isLoading={isMutating} />
+        <LoadingScreenModal
+          isLoading={isMutating}
+        />
 
         <UnAuthenticatedNav />
 

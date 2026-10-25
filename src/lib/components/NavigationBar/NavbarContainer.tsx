@@ -1,14 +1,19 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const NavbarContainer = styled.div`
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 0;
-  padding-right: 0;
-  margin: 0 auto;
-  max-width: 1400px;
   width: 100%;
-  height: auto;
-`;
+  min-height: 64px;
+  padding:0px 12px;
+  margin: 0 auto;
 
-export default NavbarContainer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  @media (max-width: 900px) {
+    min-height: 56px;
+    padding: 0 1rem;
+  }
+`
+
+export default NavbarContainer

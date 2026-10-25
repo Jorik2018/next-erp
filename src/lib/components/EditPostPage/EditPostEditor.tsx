@@ -1,18 +1,19 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import PostEditor from '@/lib/components/PostEditor/PostEditor'
-import { initializePost } from '@/lib/slices/editing-post-receipe'
 
-const EditPostEditor = () => {
-  const dispatch = useDispatch()
+interface EditPostEditorProps {
+  postID: string
+}
 
-  useEffect(() => {
-    dispatch(initializePost())
-  }, [dispatch])
-
-  return <PostEditor classroomID='123-mock' />
+const EditPostEditor = ({
+  postID
+}: EditPostEditorProps) => {
+  return (
+    <PostEditor
+      postID={postID}
+    />
+  )
 }
 
 export default EditPostEditor

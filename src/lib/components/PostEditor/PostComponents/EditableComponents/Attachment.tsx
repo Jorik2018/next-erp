@@ -7,7 +7,7 @@ import { ATTACHMENT } from "@/lib/constants/post-content/components";
 import type { PostComponentEditorProps } from "@/types/post-component-editor";
 import { Body, Footer, Header } from "@/lib/components/Card";
 import { Form, InputField } from "@/lib/components/Form";
-import { Button } from "@/lib/components/Button";
+import { Button } from "@/lib/ui/button";
 
 const AttachmentUploadWrapper = styled.div`
   height: 250px;

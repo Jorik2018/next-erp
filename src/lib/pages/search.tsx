@@ -12,7 +12,6 @@ export default function SearchPage() {
   return (
     <AuthenticatedLayout>
       <SearchHeaderPanel searchQuery={query} />
-
       <Container style={{ padding: "0", marginTop: "10em" }}>
         <SearchPanel />
         <ClassroomResultGroup />

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Card, { Header, Body, Footer } from '../Card'
 import { Form, TextArea } from '../Form'
 import ChatMessage from './ChatMessage'
-import { Button } from '../Button'
+import { Button } from '@/lib/ui/button'
 
 const ChatMessagesPanelWrapper = styled(Card)`
   height: auto;
@@ -76,7 +76,7 @@ const ChatMessagesPanel = () => (
         />
 
         <Button $primary $textCenter $fluidWidth>
-          ส่ง
+          Send
         </Button>
       </Form>
     </Footer>

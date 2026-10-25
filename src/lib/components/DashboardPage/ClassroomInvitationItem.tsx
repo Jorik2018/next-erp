@@ -8,8 +8,8 @@ import { useMutation } from '@apollo/client/react'
 import styled from 'styled-components'
 
 import { CLASSROOM_PAGE } from '../../constants/endpoints/ui'
-import { Button } from '../Button'
 import Card from '../Card'
+import { Button } from '@/lib/ui/button'
 
 const ClassroomInvitationItemWrapper = styled.div`
   position: relative;
@@ -196,7 +196,6 @@ const ClassroomInvitationItem = ({
           <Button
             $light
             $marginLeft="1em"
-            type="button"
             onClick={() => submitAnswer('refuse')}
           >
             Decline

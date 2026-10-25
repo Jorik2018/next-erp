@@ -1,6 +1,6 @@
 
-import { connectMongoDB } from "@/api/db/mongodb";
-import { UserModel } from "@/api/models";
+import { connectMongoDB } from "@/lib/db/mongodb";
+import { UserModel } from "@/lib/api/models";
 interface AuthUser {
   id: string;
   name?: string | null;

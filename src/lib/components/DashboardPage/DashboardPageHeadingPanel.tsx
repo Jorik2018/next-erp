@@ -1,7 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
+"use client";
 
-import Card from '../Card'
+import styled from "styled-components";
+
+import Card from "../Card";
 
 const DashboardPageHeading = styled.div`
   width: 550px;
@@ -11,19 +12,24 @@ const DashboardPageHeading = styled.div`
   font-weight: 400;
   text-align: center;
   display: inline-block;
-  color: ${p => p.theme.PRIMARY_COLOR};
-`
+  color: ${({ theme }) => theme.PRIMARY_COLOR};
+`;
 
 /**
  * @name DashboardPageHeadingPanel
  * @desc Display/remind users about something or introducing new feature(s)
  */
-const DashboardPageHeadingPanel = () => (
-  <Card $fluidWidth $textCenter>
-    <DashboardPageHeading>
-      ห้องเรียนที่คุณได้สร้างหรือเข้าร่วม
-    </DashboardPageHeading>
-  </Card>
-)
+const DashboardPageHeadingPanel = () => {
+  return (
+    <Card
+      $fluidWidth
+      $textCenter
+    >
+      <DashboardPageHeading>
+        Classrooms you have created or joined
+      </DashboardPageHeading>
+    </Card>
+  );
+};
 
-export default DashboardPageHeadingPanel
+export default DashboardPageHeadingPanel;

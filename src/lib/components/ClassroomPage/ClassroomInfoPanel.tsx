@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import styled from 'styled-components'
 
-import { Button } from '../Button'
 import Card from '../Card'
+import { Button } from '@/lib/ui/button'
 
 const ClassroomInfoPanelCard = styled(Card)`
   margin: 1.5em auto 0;
@@ -106,7 +106,7 @@ const ClassroomInfoPanel = ({
     </ClassroomCourseInfoContainer>
 
     <ClassroomPanelButtonsGroup>
-      <Button $light type="button">
+      <Button type="button">
         Classroom Details
       </Button>
     </ClassroomPanelButtonsGroup>

@@ -1,7 +1,7 @@
-// app/providers.tsx
 'use client'
 
 import type { ReactNode } from 'react'
+import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
 import { ApolloProvider } from '@apollo/client/react'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -11,7 +11,10 @@ import StyledComponentsRegistry from './styled-components-registry'
 
 import AuthSync from '@/lib/components/AuthSync'
 import { getApolloClient } from '@/lib/apolloClient'
-import { store } from '@/lib/store'
+import {
+  makeStore,
+  type AppStore
+} from '@/lib/initRedux'
 import { theme } from '@/styles/theme'
 
 interface ProvidersProps {
@@ -22,10 +25,19 @@ export function Providers({
   children
 }: ProvidersProps) {
   const client = getApolloClient()
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH;
+
+  const [store] = useState<AppStore>(() =>
+    makeStore()
+  )
+
+  const basePath =
+    process.env.NEXT_PUBLIC_BASE_PATH ?? ''
+
   return (
     <StyledComponentsRegistry>
-      <SessionProvider basePath={`${basePath}/api/auth`}>
+      <SessionProvider
+        basePath={`${basePath}/api/auth`}
+      >
         <ApolloProvider client={client}>
           <ReduxProvider store={store}>
             <AuthSync />

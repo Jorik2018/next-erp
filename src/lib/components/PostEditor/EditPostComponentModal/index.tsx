@@ -1,62 +1,43 @@
-import { ModalBackground, ModalPanel } from '@/lib/components/Modal'
-import EditPostComponentDetailForm from './EditPostComponentDetailForm'
-//import { ModalBackground, ModalPanel } from '../../../Modal'
-
 import {
-  SUB_HEADING,
-  SLIDE_SHOW,
-  ATTACHMENT,
-  PARAGRAPH,
-  HEADING,
-  TABLE,
-  IMAGE,
-  VIDEO,
-  LIST,
-  MAP
-} from '@/lib/constants/post-content/components'
+  ModalBackground,
+  ModalPanel,
+} from "@/lib/components/Modal";
 
-type PostComponentType =
-  | typeof HEADING
-  | typeof SUB_HEADING
-  | typeof PARAGRAPH
-  | typeof IMAGE
-  | typeof LIST
-  | typeof VIDEO
-  | typeof MAP
-  | typeof TABLE
-  | typeof SLIDE_SHOW
-  | typeof ATTACHMENT
+import EditPostComponentDetailForm from "./EditPostComponentDetailForm";
 
-interface EditPostComponentModalState {
-  isShowing: boolean
-  order: number
-  type?: PostComponentType
-}
+import type {
+  EditPostComponentModalState,
+} from "@/lib/slices/edit-post-component-modal";
 
-interface EditPostComponentData {
-  newData: unknown
-  type: PostComponentType
-  order: number
-}
+import type {
+  EditPostComponentPayload,
+} from "@/types/post-component-editor";
 
 interface EditPostComponentModalProps {
-  hideEditPostComponentModal: () => void
-  editPostComponentModal: EditPostComponentModalState
+  hideEditPostComponentModal: () => void;
+
+  editPostComponentModal:
+    EditPostComponentModalState;
+
   editPostComponent: (
-    component: EditPostComponentData
-  ) => void
+    component: EditPostComponentPayload
+  ) => void;
 }
 
 const EditPostComponentModal = ({
   hideEditPostComponentModal,
   editPostComponentModal,
-  editPostComponent
+  editPostComponent,
 }: EditPostComponentModalProps) => (
   <ModalBackground
     $show={editPostComponentModal.isShowing}
     style={{ zIndex: 100 }}
   >
-    <ModalPanel style={{ maxWidth: '1200px' }}>
+    <ModalPanel
+      style={{
+        maxWidth: "1200px",
+      }}
+    >
       <EditPostComponentDetailForm
         order={editPostComponentModal.order}
         type={editPostComponentModal.type}
@@ -67,6 +48,6 @@ const EditPostComponentModal = ({
       />
     </ModalPanel>
   </ModalBackground>
-)
+);
 
-export default EditPostComponentModal
+export default EditPostComponentModal;

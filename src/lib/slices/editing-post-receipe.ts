@@ -1,73 +1,91 @@
 // src/lib/slices/editing-post-receipe.ts
 
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { PostComponentType } from "@/helpers/post";
+import {
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 
-export interface PostComponent {
-  order?: number;
-  type: PostComponentType;
-  data: unknown;
-}
+import type {
+  PostComponent,
+} from "@/lib/helpers/post";
 
-export interface EditPostComponentPayload {
-  order?: number;
-  type: PostComponentType;
-  newData: unknown;
-}
+import type {
+  EditPostComponentPayload,
+} from "@/types/post-component-editor";
 
-type PostComponentsState = PostComponent[];
+type PostComponentsState =
+  PostComponent[];
 
 const initialState: PostComponentsState = [];
 
-const postComponentsSlice = createSlice({
-  name: "postComponents",
+const postComponentsSlice =
+  createSlice({
+    name: "postComponents",
 
-  initialState,
+    initialState,
 
-  reducers: {
-    initializePost: (state) => state,
+    reducers: {
+      initializePost: (
+        _state,
+        action: PayloadAction<PostComponentsState>
+      ) =>
+        action.payload,
 
-    addNewPostComponent: (
-      state,
-      action: PayloadAction<PostComponent>
-    ) => {
-      state.push(action.payload);
+      addNewPostComponent: (
+        state,
+        action: PayloadAction<PostComponent>
+      ) => {
+        state.push(action.payload);
+      },
+
+      editPostComponent: (
+        state,
+        action: PayloadAction<EditPostComponentPayload>
+      ) => {
+        const {
+          order,
+          type,
+          newData,
+        } = action.payload;
+
+        const index =
+          state.findIndex(
+            (item) =>
+              item.order === order &&
+              item.type === type
+          );
+
+        if (index === -1) {
+          return;
+        }
+
+        state[index] = {
+          ...state[index],
+          data: newData,
+        } as PostComponent;
+      },
+
+      removePostComponent: (
+        state,
+        action: PayloadAction<number>
+      ) =>
+        state
+          .filter(
+            (component) =>
+              component.order !==
+              action.payload
+          )
+          .map(
+            (component, index) => ({
+              ...component,
+              order: index,
+            })
+          ),
+
+      resetPost: () =>
+        initialState,
     },
-
-    editPostComponent: (
-      state,
-      action: PayloadAction<EditPostComponentPayload>
-    ) => {
-      const { order, type, newData } = action.payload;
-
-      const component = state.find(
-        (item) =>
-          item.order === order &&
-          item.type === type
-      );
-
-      if (component) {
-        component.data = newData;
-      }
-    },
-
-    removePostComponent: (
-      state,
-      action: PayloadAction<number>
-    ) =>
-      state
-        .filter(
-          (component) =>
-            component.order !== action.payload
-        )
-        .map((component, index) => ({
-          ...component,
-          order: index,
-        })),
-
-    resetPost: () => initialState,
-  },
-});
+  });
 
 export const {
   initializePost,

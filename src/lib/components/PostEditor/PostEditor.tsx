@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import PostComponentSelectorModal from "./PostComponentsSelectorModal";
@@ -7,7 +8,6 @@ import EditPostComponentModal from "./EditPostComponentModal";
 import AddPostComponentModal from "./AddPostComponentModal";
 import PostPreviewModal from "./PostPreviewModal";
 import PostContentEditor from "./PostContentEditor";
-
 
 import {
   hidePostComponentsSelectorModal,
@@ -27,48 +27,96 @@ import {
 import {
   addNewPostComponent,
   editPostComponent,
+  initializePost,
   removePostComponent,
   resetPost,
 } from "@/lib/slices/editing-post-receipe";
-import { hidePostPreviewModal, showPostPreviewModal } from "@/lib/slices/post-preview-modal";
-import { hideLoadingModal, showLoadingModal } from "@/lib/slices/mutation-status";
+
+import {
+  hidePostPreviewModal,
+  showPostPreviewModal,
+} from "@/lib/slices/post-preview-modal";
+
+import {
+  hideLoadingModal,
+  showLoadingModal,
+} from "@/lib/slices/mutation-status";
+
+import { RootState } from "@/lib/initRedux";
+import { useGetPost } from "@/lib/api/client/post/use-get-post";
 
 interface PostEditorProps {
-  classroomID: string;
-}
-
-interface RootState {
-  postComponentsSelectorModal: any;
-  editPostComponentModal: any;
-  addPostComponentModal: any;
-  postPreviewModal: boolean;
-  editingPostReceipe: any[];
+  classroomID?: string;
+  postID?: string;
 }
 
 export default function PostEditor({
+  postID,
   classroomID,
 }: PostEditorProps) {
   const dispatch = useDispatch();
 
+  // -------------------------------------------------------------
+  // Load post when editing
+  // -------------------------------------------------------------
+  const {
+    data,
+    loading,
+    error,
+  } = useGetPost(postID);
+
+  const post = data?.getPost?.post;
+
+  useEffect(() => {
+    if (!postID || !post?.recipe) {
+      return;
+    }
+
+    try {
+      const recipe = JSON.parse(post.recipe);
+
+      dispatch(initializePost(recipe));
+    } catch (err) {
+      console.error("Invalid post recipe", err);
+    }
+  }, [postID, post?.recipe, dispatch]);
+
   const isComponentsSelectorModalShowing = useSelector(
-    (state: RootState) => state.postComponentsSelectorModal
+    (state: RootState) =>
+      state.postComponentsSelectorModal,
   );
 
   const editPostComponentModal = useSelector(
-    (state: RootState) => state.editPostComponentModal
+    (state: RootState) =>
+      state.editPostComponentModal,
   );
 
   const addPostComponentModal = useSelector(
-    (state: RootState) => state.addPostComponentModal
+    (state: RootState) =>
+      state.addPostComponentModal,
   );
 
   const isPostPreviewModalShowing = useSelector(
-    (state: RootState) => state.postPreviewModal
+    (state: RootState) =>
+      state.postPreviewModal,
   );
 
   const receipe = useSelector(
-    (state: RootState) => state.editingPostReceipe
+    (state: RootState) =>
+      state.editingPostReceipe,
   );
+
+  if (postID && loading) {
+    return <p>Loading post...</p>;
+  }
+
+  if (postID && error) {
+    return <p>Unable to load post.</p>;
+  }
+
+  if (postID && data?.getPost?.err) {
+    return <p>{data.getPost.err.message}</p>;
+  }
 
   return (
     <>
@@ -77,11 +125,9 @@ export default function PostEditor({
           dispatch(hideEditPostComponentModal())
         }
         editPostComponentModal={editPostComponentModal}
-
         editPostComponent={(component) => {
           dispatch(editPostComponent(component));
         }}
-
       />
 
       <AddPostComponentModal
@@ -100,10 +146,14 @@ export default function PostEditor({
           isComponentsSelectorModalShowing
         }
         hideComponentsSelectorModal={() =>
-          dispatch(hidePostComponentsSelectorModal())
+          dispatch(
+            hidePostComponentsSelectorModal(),
+          )
         }
         showAddPostComponentModal={(type) =>
-          dispatch(showAddPostComponentModal(type))
+          dispatch(
+            showAddPostComponentModal(type),
+          )
         }
       />
 
@@ -116,31 +166,47 @@ export default function PostEditor({
       />
 
       <PostContentEditor
+        post={post}
+        postID={postID}
+        classroomID={classroomID}
+
         showComponentsSelectorModal={() =>
-          dispatch(showPostComponentsSelectorModal())
+          dispatch(
+            showPostComponentsSelectorModal(),
+          )
         }
+
         showEditPostComponentModal={(type, order) =>
-          dispatch(showEditPostComponentModal({
-            type,
-            order,
-          }))
+          dispatch(
+            showEditPostComponentModal({
+              type,
+              order,
+            }),
+          )
         }
+
         showPostPreviewModal={() =>
           dispatch(showPostPreviewModal())
         }
+
         removePostComponent={(componentOrder) =>
-          dispatch(removePostComponent(componentOrder))
+          dispatch(
+            removePostComponent(componentOrder),
+          )
         }
+
         showLoadingModal={() =>
           dispatch(showLoadingModal())
         }
+
         hideLoadingModal={() =>
           dispatch(hideLoadingModal())
         }
-        classroomID={classroomID}
+
         resetPost={() =>
           dispatch(resetPost())
         }
+
         receipe={receipe}
       />
     </>

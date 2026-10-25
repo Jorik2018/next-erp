@@ -20,7 +20,7 @@ export const columns: ColumnDef<
   {
     header: "#",
     cell: ({ row }) => {
-      return <p className="text-14-medium ">{row.index + 1}</p>;
+      return <p>{row.index + 1}</p>;
     },
   },
   {
@@ -28,7 +28,7 @@ export const columns: ColumnDef<
     header: "Patient",
     cell: ({ row }) => {
       const appointment = row.original;
-      return <p className="text-14-medium ">{appointment.patient.name}</p>;
+      return <p>{appointment.patient.name}</p>;
     },
   },
   {
@@ -88,7 +88,7 @@ export const columns: ColumnDef<
       return (
         <div className="flex gap-1">
           <AppointmentModal
-            patientId={appointment.patient.$id}
+            patient={appointment.patient.$id}
             userId={appointment.userId}
             appointment={appointment}
             type="schedule"
@@ -96,7 +96,7 @@ export const columns: ColumnDef<
             description="Please confirm the following details to schedule."
           />
           <AppointmentModal
-            patientId={appointment.patient.$id}
+            patient={appointment.patient.$id}
             userId={appointment.userId}
             appointment={appointment}
             type="cancel"

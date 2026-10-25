@@ -11,7 +11,8 @@ import {
   InputLabel,
   InputGroup,
 } from "@/lib/components/Form";
-import { Button, CircleButton } from "@/lib/components/Button";
+import { Button, CircleButton } from "@/lib/ui/button";
+import { TableData } from "@/lib/helpers/post";
 
 interface TableMeta {
   name: string;
@@ -27,13 +28,6 @@ interface TableRow {
   id: string;
   items: TableRowItem[];
 }
-
-interface TableData {
-  meta: TableMeta;
-  head: string[];
-  body: TableRow[];
-}
-
 interface BaseTableProps {
   order: number;
 }
@@ -53,7 +47,7 @@ interface AddTableProps extends BaseTableProps {
 interface EditTableProps extends BaseTableProps {
   useToAddComponent: false;
 
-  hideEditPostComponentModal: () => void;
+  hideEditPostComponentModal: () => void;//este tipado tiene sentido?
 
   editPostComponent: (component: {
     type: typeof TABLE;

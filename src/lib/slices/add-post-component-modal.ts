@@ -1,17 +1,13 @@
 // store/slices/addPostComponentModalSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-type AddPostComponentModalState = {
-  isShowing: boolean
-  type?: string
-}
+import { AddPostComponentModalState, PostComponentType } from '../helpers/post'
+import { PARAGRAPH } from '../constants/post-content/components'
 
 const initialState: AddPostComponentModalState = {
   isShowing: false,
-  type: undefined,
+  type: PARAGRAPH,
 }
-
 
 const addPostComponentModalSlice = createSlice({
   name: 'addPostComponentModal',
@@ -21,7 +17,7 @@ const addPostComponentModalSlice = createSlice({
   reducers: {
     showAddPostComponentModal: (
       state,
-      action: PayloadAction<string>,
+      action: PayloadAction<PostComponentType>,
     ) => {
       state.isShowing = true
       state.type = action.payload
@@ -29,7 +25,7 @@ const addPostComponentModalSlice = createSlice({
 
     hideAddPostComponentModal: state => {
       state.isShowing = false
-      state.type = undefined
+      state.type = PARAGRAPH
     },
   },
 })

@@ -10,12 +10,12 @@ import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
 import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
 import Container from "@/lib/components/Container";
 
-export default function ClassroomJoinRequestPage() {
+interface ClassroomJoinRequestPageProp {
+  classroomID: string;
+}
+
+export default function ClassroomJoinRequestPage({ classroomID }: ClassroomJoinRequestPageProp) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const classroomID = searchParams.get("id");
-
   // Temporary mocked data from the original getInitialProps.
   const isMember = true;
   const classroomName = "Introduction to Computer Science";

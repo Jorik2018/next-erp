@@ -1,5 +1,5 @@
-import Form from '@/app/ui/invoices/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Form from '@/lib/ui/invoices/create-form';
+import Breadcrumbs from '@/lib/ui/invoices/breadcrumbs';
 import { fetchCustomers } from '@/lib/data';
  
 export const dynamic = 'force-dynamic';

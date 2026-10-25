@@ -7,7 +7,11 @@ import { z } from "zod";
 import { SUB_HEADING } from "@/lib/constants/post-content/components";
 import { Header, Body, Footer } from "@/lib/components/Card";
 import { Form } from "@/lib/components/Form";
-import { Button } from "@/lib/components/Button";
+import { Button } from "@/lib/ui/button";
+
+import type {
+  PostComponentEditorProps,
+} from "@/types/post-component-editor";
 
 const subHeadingSchema = z.object({
   sub_heading_text: z
@@ -16,102 +20,85 @@ const subHeadingSchema = z.object({
     .min(1, "Subheading is required"),
 });
 
-type SubHeadingFormValues = z.infer<typeof subHeadingSchema>;
+type SubHeadingFormValues =
+  z.infer<typeof subHeadingSchema>;
 
-interface SubHeadingProps {
-  useToAddComponent: boolean;
-  order: number;
+type SubHeadingProps =
+  PostComponentEditorProps<
+    string,
+    typeof SUB_HEADING
+  >;
 
-  hideAddPostComponentModal?: () => void;
-  hideEditPostComponentModal?: () => void;
-
-  addNewPostComponent?: (component: {
-    data: string;
-    type: typeof SUB_HEADING;
-    order: number;
-  }) => void;
-
-  editPostComponent?: (component: {
-    newData: string;
-    type: typeof SUB_HEADING;
-    order: number;
-  }) => void;
-}
-
-
-export default function SubHeading({
-  useToAddComponent,
-  order,
-  hideAddPostComponentModal,
-  hideEditPostComponentModal,
-  addNewPostComponent,
-  editPostComponent,
-}: SubHeadingProps) {
+const SubHeading = (
+  props: SubHeadingProps
+) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<SubHeadingFormValues>({
-    resolver: zodResolver(subHeadingSchema),
+    resolver: zodResolver(
+      subHeadingSchema
+    ),
+
     defaultValues: {
       sub_heading_text: "",
     },
   });
 
-  const addComponentHandler = ({
+  const onSubmit = ({
     sub_heading_text,
   }: SubHeadingFormValues) => {
-    if (!addNewPostComponent) {
+    if (props.useToAddComponent) {
+      props.addNewPostComponent({
+        data: sub_heading_text,
+        type: SUB_HEADING,
+        order: props.order,
+      });
+
+      props.hideAddPostComponentModal();
+
       return;
     }
 
-    addNewPostComponent({
-      data: sub_heading_text,
-      type: SUB_HEADING,
-      order,
-    });
-
-    hideAddPostComponentModal?.();
-  };
-
-  const editComponentHandler = ({
-    sub_heading_text,
-  }: SubHeadingFormValues) => {
-    if (!editPostComponent) {
-      return;
-    }
-
-    editPostComponent({
+    props.editPostComponent({
       newData: sub_heading_text,
       type: SUB_HEADING,
-      order,
+      order: props.order,
     });
 
-    hideEditPostComponentModal?.();
+    props.hideEditPostComponentModal();
   };
 
-  const hideThisModal = useToAddComponent
-    ? hideAddPostComponentModal
-    : hideEditPostComponentModal;
-
-  const submitHandler = useToAddComponent
-    ? addComponentHandler
-    : editComponentHandler;
+  const hideThisModal =
+    props.useToAddComponent
+      ? props.hideAddPostComponentModal
+      : props.hideEditPostComponentModal;
 
   return (
     <>
       <Header>Subheading</Header>
 
-      <Form onSubmit={handleSubmit(submitHandler)}>
+      <Form
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Body>
           <input
-            {...register("sub_heading_text")}
+            {...register(
+              "sub_heading_text"
+            )}
             type="text"
             placeholder="Enter subheading"
           />
 
           {errors.sub_heading_text && (
-            <p>{errors.sub_heading_text.message}</p>
+            <p>
+              {
+                errors
+                  .sub_heading_text
+                  .message
+              }
+            </p>
           )}
         </Body>
 
@@ -135,4 +122,6 @@ export default function SubHeading({
       </Form>
     </>
   );
-}
+};
+
+export default SubHeading;

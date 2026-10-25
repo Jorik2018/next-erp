@@ -1,7 +1,6 @@
 "use client";
 
-import { gql } from "@apollo/client";
-import { useMutation } from "@apollo/client/react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -9,39 +8,27 @@ import {
   renderEditableComponent,
   type PostComponent,
   type PostComponentType,
-} from "@/helpers/post";
+} from "@/lib/helpers/post";
 
+import type { Post } from "@/lib/api/client/post/use-get-post";
+import { useSavePost } from "@/lib/api/client/post/use-save-post";
+import { GET_POST_QUERY } from "@/lib/api/client/post/use-get-post";
 import EmptyField from "./PostComponents/EmptyField";
-import { CircleButton } from "@/lib/components/Button";
 import { InputField } from "@/lib/components/Form";
 import Card from "@/lib/components/Card";
 import { POST_PAGE } from "@/lib/constants/endpoints/ui";
+import { CircleButton } from "@/lib/ui/button";
 
 interface PostFormValues {
   title: string;
 }
 
-interface CreatePostData {
-  createPost: {
-    success: boolean;
-    post: {
-      _id: string;
-    } | null;
-    err: {
-      message: string;
-    } | null;
-  };
-}
-
-interface CreatePostVariables {
-  title: string;
-  recipe: string;
-  isPublic: boolean;
-  classroomID: string;
-}
-
 interface PostContentEditorProps {
-  classroomID: string;
+  post?: Post | null;
+
+  classroomID?: string;
+  postID?: string;
+
   receipe: PostComponent[];
 
   showComponentsSelectorModal: () => void;
@@ -61,42 +48,10 @@ interface PostContentEditorProps {
   resetPost: () => void;
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   GraphQL                                  */
-/* -------------------------------------------------------------------------- */
-
-const CREATE_POST_MUTATION = gql`
-  mutation CreatePost(
-    $title: String!
-    $recipe: String!
-    $isPublic: Boolean!
-    $classroomID: String!
-  ) {
-    createPost(
-      title: $title
-      recipe: $recipe
-      isPublic: $isPublic
-      classroomID: $classroomID
-    ) {
-      success
-
-      post {
-        _id
-      }
-
-      err {
-        message
-      }
-    }
-  }
-`;
-
-/* -------------------------------------------------------------------------- */
-/*                              PostContentEditor                             */
-/* -------------------------------------------------------------------------- */
-
 const PostContentEditor = ({
+  post,
   classroomID,
+  postID,
   receipe,
   resetPost,
   removePostComponent,
@@ -111,22 +66,35 @@ const PostContentEditor = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: {
+      errors,
+      isSubmitting,
+    },
   } = useForm<PostFormValues>({
     defaultValues: {
       title: "",
     },
   });
 
-  const [createPost] = useMutation<
-    CreatePostData,
-    CreatePostVariables
-  >(CREATE_POST_MUTATION);
+  // -----------------------------------------------------------------------
+  // Initialize form when editing an existing post
+  // -----------------------------------------------------------------------
+  useEffect(() => {
+    if (!post) {
+      return;
+    }
 
-  /* ------------------------------------------------------------------------ */
-  /*                                Save Post                                 */
-  /* ------------------------------------------------------------------------ */
+    reset({
+      title: post.title,
+    });
+  }, [post, reset]);
 
+  const [savePostMutation] = useSavePost();
+
+  // -----------------------------------------------------------------------
+  // Save Post
+  // -----------------------------------------------------------------------
   const savePost = async ({
     title,
   }: PostFormValues) => {
@@ -135,24 +103,46 @@ const PostContentEditor = ({
       return;
     }
 
+    // CREATE -> classroomID comes from props
+    // UPDATE -> classroomID comes from loaded post
+    const effectiveClassroomID =
+      classroomID ?? post?.classroom;
+
+    if (!effectiveClassroomID) {
+      alert("Classroom ID is required.");
+      return;
+    }
+
     showLoadingModal();
 
     try {
-      const { data } = await createPost({
-        variables: {
-          title: title.trim(),
-          classroomID,
-          isPublic: false,
-          recipe: JSON.stringify(receipe),
-        },
-      });
+const { data } = await savePostMutation({
+  variables: {
+    postID,
+    classroomID: effectiveClassroomID,
+    title: title.trim(),
+    isPublic: post?.isPublic ?? false,
+    recipe: JSON.stringify(receipe),
+  },
 
-      const result = data?.createPost;
+  refetchQueries: postID
+    ? [
+        {
+          query: GET_POST_QUERY,
+          variables: {
+            _id: postID,
+          },
+        },
+      ]
+    : [],
+});
+
+      const result = data?.savePost;
 
       if (!result?.success || !result.post) {
         alert(
           result?.err?.message ??
-            "Unable to create the post."
+          "Unable to save the post."
         );
 
         return;
@@ -161,28 +151,21 @@ const PostContentEditor = ({
       resetPost();
 
       router.push(
-        `${POST_PAGE}?id=${result.post._id}`
+        `${POST_PAGE}/${result.post._id}`
       );
     } catch (error) {
       console.error(
-        "Unable to create post:",
+        "Unable to save post:",
         error
       );
 
-      alert("Unable to create the post.");
+      alert("Unable to save the post.");
     } finally {
       hideLoadingModal();
     }
   };
-
-  /* ------------------------------------------------------------------------ */
-  /*                                  Render                                  */
-  /* ------------------------------------------------------------------------ */
-
   return (
     <form onSubmit={handleSubmit(savePost)}>
-      {/* Post title */}
-
       <Card
         $fluidWidth
         $padding="2em"
@@ -201,8 +184,6 @@ const PostContentEditor = ({
         />
       </Card>
 
-      {/* Post components */}
-
       <Card
         $fluidWidth
         $noShadow
@@ -219,8 +200,6 @@ const PostContentEditor = ({
           onClick={showComponentsSelectorModal}
         />
       </Card>
-
-      {/* Editor actions */}
 
       {receipe.length > 0 && (
         <>

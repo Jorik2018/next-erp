@@ -10,11 +10,11 @@ const CommentMessageBoxCard = styled(Card)`
 
 /**
  * @name CommentMessageBox
- * @desc Send a new message to a particular post
+ * @desc Send a new comment to a particular post
  */
 const CommentMessageBox = () => (
   <CommentMessageBoxCard>
-    <Header>แสดงความคิดเห็นของคุณ</Header>
+    <Header>Leave a Comment</Header>
 
     <Body>
       <CommentMessageBoxForm />

@@ -87,8 +87,7 @@ export const ClassroomListItem = ({
 }: ClassroomListItemProps) => (
   <Link
     href={{
-      pathname: CLASSROOM_PAGE,
-      query: { id: _id }
+      pathname: CLASSROOM_PAGE+"/"+_id
     }}
     prefetch
   >

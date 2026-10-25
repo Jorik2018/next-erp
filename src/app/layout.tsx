@@ -1,7 +1,7 @@
-import '@/app/ui/global.css';
+import '@/lib/ui/global.css';
 import { Metadata } from 'next';
 import { Providers } from './providers';
-import { inter } from './ui/fonts';
+import { inter } from '../lib/ui/fonts';
  
 
 export const metadata: Metadata = {

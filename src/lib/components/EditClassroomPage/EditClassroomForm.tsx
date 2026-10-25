@@ -3,8 +3,8 @@
 import { useForm } from 'react-hook-form'
 
 import Card, { Header, Body } from '../Card'
-import { Button } from '../Button'
 import { InputField, TextAreaField } from '../Form'
+import { Button } from '@/lib/ui/button'
 
 interface EditClassroomFormValues {
   name: string

@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { useSession } from 'next-auth/react'
 
-import type { AppDispatch } from '@/lib/store'
+import { useAppDispatch } from '@/lib/store/hooks'
 
 import {
   initializeAuthenticatedUser,
@@ -12,8 +11,10 @@ import {
 } from '@/lib/slices/user'
 
 export default function AuthSync() {
-  const { data: session, status } = useSession()
-  const dispatch = useDispatch<AppDispatch>()
+  const { data: session, status } =
+    useSession()
+
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (status === 'loading') {
@@ -24,7 +25,7 @@ export default function AuthSync() {
       dispatch(
         initializeAuthenticatedUser({
           id: session.user.id,
-          _id: session.user._id,
+          _id: session.user._id
         })
       )
 

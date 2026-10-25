@@ -15,6 +15,7 @@ interface SearchFieldProps {
   isSearchPanelShowing?: boolean
   onChange: ChangeEventHandler<HTMLInputElement>
   onFocus?: FocusEventHandler<HTMLInputElement>
+  onBlur?: FocusEventHandler<HTMLInputElement>
 }
 
 const SearchField = ({
@@ -24,7 +25,8 @@ const SearchField = ({
   placeholder,
   isSearchPanelShowing = false,
   onChange,
-  onFocus
+  onFocus,
+  onBlur
 }: SearchFieldProps) => (
   <SearchInput
     value={value}
@@ -34,6 +36,7 @@ const SearchField = ({
     $isSearchPanelShowing={isSearchPanelShowing}
     onChange={onChange}
     onFocus={onFocus}
+    onBlur={onBlur}
   />
 )
 

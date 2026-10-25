@@ -33,7 +33,7 @@ type EmptyFieldProps = ComponentPropsWithoutRef<'div'>
  */
 const EmptyField = (props: EmptyFieldProps) => (
   <EmptyFieldWrapper {...props}>
-    <h3>เพิ่มส่วนประกอบ</h3>
+    <h3>Add Component</h3>
   </EmptyFieldWrapper>
 )
 

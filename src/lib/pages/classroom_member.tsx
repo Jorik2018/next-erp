@@ -13,9 +13,9 @@ import AuthenticatedLayout from "@/lib/components/layout/AuthenticatedLayout";
 import { CLASSROOM_PAGE } from "@/lib/constants/endpoints/ui";
 import LoadingIcon from "@/lib/components/LoadingIcon";
 import Container from "@/lib/components/Container";
-import { Button } from "@/lib/components/Button";
 import Card from "@/lib/components/Card";
 import { hideClassroomInvitationModal, showClassroomInvitationModal } from "../slices/classroom-invitation-modal";
+import { Button } from "../ui/button";
 
 interface ClassroomMembersData {
   classroomMembers: {
@@ -63,12 +63,13 @@ const CLASSROOM_MEMBERS_QUERY = gql`
   }
 `;
 
-export default function ClassroomMemberPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const dispatch = useDispatch();
+interface ClassroomMemberPageProps {
+  classroomID: string
+}
 
-  const classroomID = searchParams.get("id");
+export default function ClassroomMemberPage({ classroomID }: ClassroomMemberPageProps) {
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const isClassroomInvitationModalShowing = useSelector(
     (state: RootState) => state.classroomInvitationModal

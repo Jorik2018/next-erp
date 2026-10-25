@@ -7,7 +7,7 @@ import ResultTitle from "./ResultTitle";
  * @desc A Card component contents of user profile associated to user's search query
  */
 const UserResultGroup = () => (
-  <SearchResultGroup header="ผู้ใช้งาน">
+  <SearchResultGroup header="Users">
     <UserResult>
       <ResultTitle>Tony Stark</ResultTitle>
     </UserResult>

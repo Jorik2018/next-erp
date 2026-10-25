@@ -7,8 +7,8 @@ import { useForm } from 'react-hook-form'
 
 import { InputField, InputLabel, InputGroup } from '../Form'
 import Card, { Header, Body } from '../Card'
-import { Button } from '../Button'
 import { LOGIN_PAGE } from '@/lib/constants/endpoints/ui'
+import { Button } from '@/lib/ui/button'
 
 interface RegisterFormValues {
   email: string

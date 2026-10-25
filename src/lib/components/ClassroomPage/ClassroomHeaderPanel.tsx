@@ -24,13 +24,25 @@ const ClassroomNameHeading = styled.h1`
  * @prop classroomID : ID of the classroom, used to determine which classroom to query from DB
  * @prop classroomName : Name of the classroom
  */
-const ClassroomHeaderPanel = ({ classroomID, classroomName }: ClassroomHeaderPanelProp) => (
-  <ClassroomHeaderCard>
-    ห้องเรียน
-    <Link href={{ pathname: CLASSROOM_PAGE, query: { id: classroomID } }} prefetch>
-      <ClassroomNameHeading>{classroomName}</ClassroomNameHeading>
-    </Link>
-  </ClassroomHeaderCard>
+const ClassroomHeaderPanel = ({
+  classroomID,
+  classroomName
+}: ClassroomHeaderPanelProp) => (
+<ClassroomHeaderCard>
+  Classroom
+
+  <Link
+    href={{
+      pathname: CLASSROOM_PAGE,
+      query: { id: classroomID }
+    }}
+    prefetch
+  >
+    <ClassroomNameHeading>
+      {classroomName}
+    </ClassroomNameHeading>
+  </Link>
+</ClassroomHeaderCard>
 )
 
 interface ClassroomHeaderPanelProp {

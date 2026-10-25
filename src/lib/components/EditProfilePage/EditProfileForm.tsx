@@ -11,7 +11,7 @@ import { AuthenticatedUser } from '@/lib/types/user'
 import { PROFILE_PAGE } from '@/lib/constants/endpoints/ui'
 import Card, { Body, Header } from '../Card'
 import { InputField } from '../Form'
-import { Button } from '../Button'
+import { Button } from '@/lib/ui/button'
 
 interface RootState {
   user: AuthenticatedUser

@@ -154,8 +154,6 @@ export async function POST(
           ...patientData,
 
           identificationDocumentId,
-
-          identificationDocumentUrl,
         },
       });
 

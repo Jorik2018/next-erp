@@ -247,7 +247,6 @@
 
   .shad-textArea {
     @apply border-[#363a3d]
-           bg-[#1a1d21]
            placeholder:text-[#76828d]
            focus-visible:ring-0
            focus-visible:ring-offset-0 !important;

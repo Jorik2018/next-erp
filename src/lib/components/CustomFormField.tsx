@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/lib/components/ui/select";
 import { Textarea } from "@/lib/components/ui/textarea";
+import { withBasePath } from "../base-path";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -166,7 +167,7 @@ const RenderInput = <
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
           <Image
-            src="/assets/icons/calendar.svg"
+            src={withBasePath("/assets/icons/calendar.svg")}
             height={24}
             width={24}
             alt="Calendar"

@@ -2,6 +2,7 @@ import { StatCard } from "@/lib/components/StatCard";
 import { columns } from "@/lib/components/table/columns";
 import { DataTable } from "@/lib/components/table/DataTable";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.actions";
+import { withBasePath } from "@/lib/base-path";
 
 const AppointmentsPage = async () => {
   const appointments =
@@ -28,8 +29,9 @@ const AppointmentsPage = async () => {
           count={
             appointments.scheduledCount
           }
+
           label="Scheduled appointments"
-          icon="/assets/icons/appointments.svg"
+          icon={withBasePath('/assets/icons/appointments.svg')}
         />
 
         <StatCard
@@ -38,7 +40,7 @@ const AppointmentsPage = async () => {
             appointments.pendingCount
           }
           label="Pending appointments"
-          icon="/assets/icons/pending.svg"
+          icon={withBasePath('/assets/icons/pending.svg')}
         />
 
         <StatCard
@@ -47,7 +49,7 @@ const AppointmentsPage = async () => {
             appointments.cancelledCount
           }
           label="Cancelled appointments"
-          icon="/assets/icons/cancelled.svg"
+          icon={withBasePath('/assets/icons/cancelled.svg')}
         />
       </section>
 

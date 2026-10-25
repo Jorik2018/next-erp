@@ -12,6 +12,7 @@ import { Appointment } from "@/types/appwrite.types";
 
 import { AppointmentModal } from "../AppointmentModal";
 import { StatusBadge } from "../StatusBadge";
+import { withBasePath } from "@/lib/base-path";
 
 export const columns: ColumnDef<
   StockFeatures,
@@ -68,7 +69,7 @@ export const columns: ColumnDef<
       return (
         <div className="flex items-center gap-3">
           <Image
-            src={doctor?.image!}
+            src={withBasePath(doctor?.image!)}
             alt="doctor"
             width={100}
             height={100}

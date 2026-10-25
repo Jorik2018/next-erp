@@ -1,5 +1,6 @@
+// src/lib/constants/appwrite.ts
+
 export const APPWRITE = {
-  DATABASE_ID: process.env.APPWRITE_DATABASE_ID!,
 
   TABLES: {
     PATIENTS: "patients",

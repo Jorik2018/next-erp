@@ -1,3 +1,5 @@
+// src/lib/appwrite/server.ts
+
 import {
   Client,
   Databases,
@@ -19,6 +21,7 @@ interface AppwriteServer {
 
   endpoint: string;
   projectId: string;
+  databaseId: string;
 }
 
 let appwritePromise:
@@ -56,5 +59,6 @@ async function createAppwrite(): Promise<AppwriteServer> {
 
     endpoint: config.appwrite.endpoint,
     projectId: config.appwrite.projectId,
+    databaseId: config.appwrite.databaseId,
   };
 }

@@ -2,26 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { ID, Query } from "node-appwrite";
-
 import { APPWRITE } from "@/lib/constants/appwrite";
 import { getAppwrite } from "@/lib/appwrite/server";
 import { formatDateTime, parseStringify } from "@/lib/utils";
 import type { Appointment } from "@/types/appwrite.types";
 
-type AppointmentRow = Appointment & {
-  $id: string;
-  $createdAt: string;
-  $updatedAt: string;
-};
-
 export const createAppointment = async (
   appointment: CreateAppointmentParams,
 ) => {
   try {
-    const { tablesDB } = await getAppwrite();
+    const { tablesDB, databaseId } = await getAppwrite();
 
     const newAppointment = await tablesDB.createRow({
-      databaseId: APPWRITE.DATABASE_ID,
+      databaseId,
 
       tableId: APPWRITE.TABLES.APPOINTMENTS,
 
@@ -47,10 +40,10 @@ export const createAppointment = async (
 
 export const getRecentAppointmentList = async () => {
   try {
-    const { tablesDB } = await getAppwrite();
+    const { tablesDB, databaseId } = await getAppwrite();
 
     const appointments = await tablesDB.listRows({
-      databaseId: APPWRITE.DATABASE_ID,
+      databaseId,
 
       tableId: APPWRITE.TABLES.APPOINTMENTS,
 
@@ -134,11 +127,11 @@ export const updateAppointment = async ({
   type,
 }: UpdateAppointmentParams) => {
   try {
-    const { tablesDB } = await getAppwrite();
+    const { tablesDB, databaseId } = await getAppwrite();
 
     // 1. Actualizar la cita
     const updatedAppointment = await tablesDB.updateRow({
-      databaseId: APPWRITE.DATABASE_ID,
+      databaseId,
 
       tableId: APPWRITE.TABLES.APPOINTMENTS,
 
@@ -200,10 +193,10 @@ export const getAppointment = async (
   appointmentId: string,
 ) => {
   try {
-    const { tablesDB } = await getAppwrite();
+    const { tablesDB, databaseId } = await getAppwrite();
 
     const appointment = await tablesDB.getRow({
-      databaseId: APPWRITE.DATABASE_ID,
+      databaseId,
 
       tableId: APPWRITE.TABLES.APPOINTMENTS,
 
@@ -227,10 +220,10 @@ export const getAppointmentsByUser = async (
   userId: string,
 ) => {
   try {
-    const { tablesDB } = await getAppwrite();
+    const { tablesDB, databaseId } = await getAppwrite();
 
     const appointments = await tablesDB.listRows({
-      databaseId: APPWRITE.DATABASE_ID,
+      databaseId,
 
       tableId: APPWRITE.TABLES.APPOINTMENTS,
 
@@ -258,10 +251,10 @@ export const getAppointmentsByUser = async (
 
 export const getAllAppointments = async () => {
   try {
-    const { tablesDB } = await getAppwrite();
+    const { tablesDB, databaseId } = await getAppwrite();
 
     const appointments = await tablesDB.listRows({
-      databaseId: APPWRITE.DATABASE_ID,
+      databaseId,
 
       tableId: APPWRITE.TABLES.APPOINTMENTS,
 

@@ -8,7 +8,7 @@ import { getAppwrite } from "@/lib/appwrite/server";
 import { parseStringify } from "@/lib/utils";
 
 export const createUser = async (
-  user: CreateUserParams
+  user: CreateUserParams,
 ) => {
   const { users } = await getAppwrite();
 
@@ -18,7 +18,7 @@ export const createUser = async (
       user.email,
       user.phone,
       undefined,
-      user.name
+      user.name,
     );
 
     return parseStringify(newUser);
@@ -26,24 +26,23 @@ export const createUser = async (
     if (
       isAppwriteConflictError(error)
     ) {
-      const existingUsers =
-        await users.list({
-          queries: [
-            Query.equal(
-              "email",
-              [user.email]
-            ),
-          ],
-        });
+      const existingUsers = await users.list({
+        queries: [
+          Query.equal(
+            "email",
+            [user.email],
+          ),
+        ],
+      });
 
       return parseStringify(
-        existingUsers.users[0]
+        existingUsers.users[0],
       );
     }
 
     console.error(
       "An error occurred while creating a new user:",
-      error
+      error,
     );
 
     throw error;
@@ -51,20 +50,18 @@ export const createUser = async (
 };
 
 export const getUser = async (
-  userId: string
+  userId: string,
 ) => {
   try {
-    const { users } =
-      await getAppwrite();
+    const { users } = await getAppwrite();
 
-    const user =
-      await users.get(userId);
+    const user = await users.get(userId);
 
     return parseStringify(user);
   } catch (error) {
     console.error(
       "An error occurred while retrieving the user details:",
-      error
+      error,
     );
 
     throw error;
@@ -83,8 +80,7 @@ export const registerPatient = async ({
     const {
       storage,
       tablesDB,
-      endpoint,
-      projectId,
+      databaseId,
     } = await getAppwrite();
 
     let identificationDocumentId:
@@ -92,106 +88,90 @@ export const registerPatient = async ({
       | null = null;
 
     if (identificationDocument) {
-      const blobFile =
-        identificationDocument.get(
-          "blobFile"
-        );
+      const blobFile = identificationDocument.get(
+        "blobFile",
+      );
 
-      const fileName =
-        identificationDocument.get(
-          "fileName"
-        );
+      const fileName = identificationDocument.get(
+        "fileName",
+      );
 
       if (
         blobFile instanceof Blob &&
         typeof fileName === "string"
       ) {
-        const inputFile =
-          InputFile.fromBuffer(
-            Buffer.from(
-              await blobFile.arrayBuffer()
-            ),
-            fileName
-          );
+        const inputFile = InputFile.fromBuffer(
+          Buffer.from(
+            await blobFile.arrayBuffer(),
+          ),
+          fileName,
+        );
 
-        const uploadedFile =
-          await storage.createFile({
-            bucketId:
-              APPWRITE.BUCKETS
-                .PATIENT_DOCUMENTS,
+        const uploadedFile = await storage.createFile({
+          bucketId: APPWRITE.BUCKETS
+            .PATIENT_DOCUMENTS,
 
-            fileId: ID.unique(),
+          fileId: ID.unique(),
 
-            file: inputFile,
-          });
+          file: inputFile,
+        });
 
-        identificationDocumentId =
-          uploadedFile.$id;
+        identificationDocumentId = uploadedFile.$id;
       }
     }
 
-    const newPatient =
-      await tablesDB.createRow({
-        databaseId:
-          APPWRITE.DATABASE_ID,
+    const newPatient = await tablesDB.createRow({
+      databaseId,
 
-        tableId:
-          APPWRITE.TABLES.PATIENTS,
+      tableId: APPWRITE.TABLES.PATIENTS,
 
-        rowId: ID.unique(),
+      rowId: ID.unique(),
 
-        data: {
-          ...patient,
+      data: {
+        ...patient,
 
-          identificationDocumentId,
-        },
-      });
+        identificationDocumentId,
+      },
+    });
 
     return parseStringify(
-      newPatient
+      newPatient,
     );
   } catch (error) {
     console.error(
       "An error occurred while creating a new patient:",
-      error
+      error,
     );
 
     throw error;
   }
 };
 
-/* -------------------------------------------------------------------------- */
-/*                                Get Patient                                 */
-/* -------------------------------------------------------------------------- */
-
 export const getPatient = async (
-  userId: string
+  userId: string,
 ) => {
   try {
-    const { tablesDB } = await getAppwrite();
-    const patients =
-      await tablesDB.listRows({
-        databaseId:
-          APPWRITE.DATABASE_ID,
+    const { tablesDB, databaseId } = await getAppwrite();
+    const patients = await tablesDB.listRows({
+      databaseId,
 
-        tableId:
-          APPWRITE.TABLES.PATIENTS,
+      tableId: APPWRITE.TABLES.PATIENTS,
 
-        queries: [
-          Query.equal(
-            "userId",
-            [userId]
-          ),
-        ],
-      });
+      queries: [
+        Query.equal(
+          "userId",
+          [userId],
+        ),
+      ],
+    });
 
     return parseStringify(
-      patients.rows[0] ?? null
+      patients.rows[0] ?? null,
     );
   } catch (error) {
     console.error(
       "An error occurred while retrieving the patient details:",
-      error
+      error,
     );
 
     throw error;
@@ -211,8 +191,7 @@ function buildDocumentUrl({
   projectId: string;
   fileId: string;
 }) {
-  const bucketId =
-    APPWRITE.BUCKETS.PATIENT_DOCUMENTS;
+  const bucketId = APPWRITE.BUCKETS.PATIENT_DOCUMENTS;
 
   return (
     `${endpoint}/storage/buckets/` +
@@ -223,13 +202,13 @@ function buildDocumentUrl({
 }
 
 function isAppwriteConflictError(
-  error: unknown
+  error: unknown,
 ): error is { code: number } {
   return (
     typeof error === "object" &&
     error !== null &&
     "code" in error &&
     (error as { code?: unknown })
-      .code === 409
+        .code === 409
   );
 }

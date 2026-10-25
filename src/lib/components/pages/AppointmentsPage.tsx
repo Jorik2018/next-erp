@@ -3,8 +3,6 @@ import { columns } from "@/lib/components/table/columns";
 import { DataTable } from "@/lib/components/table/DataTable";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.actions";
 
-export const dynamic = "force-dynamic";
-
 const AppointmentsPage = async () => {
   const appointments =
     await getRecentAppointmentList();

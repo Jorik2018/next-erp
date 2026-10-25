@@ -237,14 +237,6 @@
     @apply text-14-medium text-[#abb8c4] !important;
   }
 
-  .shad-input {
-    @apply h-11 border-[#363a3d]
-           bg-[#1a1d21]
-           placeholder:text-[#76828d]
-           focus-visible:ring-0
-           focus-visible:ring-offset-0 !important;
-  }
-
   .shad-input-icon {
     @apply h-11 border-[#363a3d]
            bg-[#1a1d21]

@@ -1,7 +1,4 @@
-import {
-  NextRequest,
-  NextResponse,
-} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
@@ -21,18 +18,18 @@ type PatientData = Record<
  * an identification document.
  */
 export async function POST(
-  req: NextRequest
+  req: NextRequest,
 ) {
   try {
     const {
       storage,
+      databaseId,
       tablesDB,
       endpoint,
       projectId,
     } = await getAppwrite();
 
-    const contentType =
-      req.headers.get("content-type") ?? "";
+    const contentType = req.headers.get("content-type") ?? "";
 
     let patientData: PatientData = {};
     let identificationDocumentId:
@@ -45,68 +42,56 @@ export async function POST(
 
     if (
       contentType.includes(
-        "multipart/form-data"
+        "multipart/form-data",
       )
     ) {
       const formData = await req.formData();
 
-      const blobFile =
-        formData.get("blobFile");
+      const blobFile = formData.get("blobFile");
 
-      const fileName =
-        formData.get("fileName");
+      const fileName = formData.get("fileName");
 
       if (
         blobFile instanceof Blob &&
         typeof fileName === "string" &&
         fileName.length > 0
       ) {
-        const inputFile =
-          InputFile.fromBuffer(
-            Buffer.from(
-              await blobFile.arrayBuffer()
-            ),
-            fileName
-          );
+        const inputFile = InputFile.fromBuffer(
+          Buffer.from(
+            await blobFile.arrayBuffer(),
+          ),
+          fileName,
+        );
 
-        const uploadedFile =
-          await storage.createFile({
-            bucketId:
-              APPWRITE.BUCKETS
-                .PATIENT_DOCUMENTS,
+        const uploadedFile = await storage.createFile({
+          bucketId: APPWRITE.BUCKETS
+            .PATIENT_DOCUMENTS,
 
-            fileId: ID.unique(),
+          fileId: ID.unique(),
 
-            file: inputFile,
-          });
+          file: inputFile,
+        });
 
-        identificationDocumentId =
-          uploadedFile.$id;
+        identificationDocumentId = uploadedFile.$id;
       }
 
-      patientData =
-        Object.fromEntries(
-          formData.entries()
-        );
+      patientData = Object.fromEntries(
+        formData.entries(),
+      );
 
       delete patientData.blobFile;
       delete patientData.fileName;
-    }
-
-    // ============================================================
+    } // ============================================================
     // JSON
     // ============================================================
 
     else if (
       contentType.includes(
-        "application/json"
+        "application/json",
       )
     ) {
-      patientData =
-        (await req.json()) as PatientData;
-    }
-
-    // ============================================================
+      patientData = (await req.json()) as PatientData;
+    } // ============================================================
     // Unsupported content type
     // ============================================================
 
@@ -118,7 +103,7 @@ export async function POST(
         },
         {
           status: 415,
-        }
+        },
       );
     }
 
@@ -126,57 +111,50 @@ export async function POST(
     // Identification document URL
     // ============================================================
 
-    const identificationDocumentUrl =
-      identificationDocumentId
-        ? buildDocumentUrl({
-            endpoint,
-            projectId,
-            fileId:
-              identificationDocumentId,
-          })
-        : null;
+    const identificationDocumentUrl = identificationDocumentId
+      ? buildDocumentUrl({
+        endpoint,
+        projectId,
+        fileId: identificationDocumentId,
+      })
+      : null;
 
     // ============================================================
     // Create patient
     // ============================================================
 
-    const newPatient =
-      await tablesDB.createRow({
-        databaseId:
-          APPWRITE.DATABASE_ID,
+    const newPatient = await tablesDB.createRow({
+      databaseId,
+      tableId: APPWRITE.TABLES.PATIENTS,
 
-        tableId:
-          APPWRITE.TABLES.PATIENTS,
+      rowId: ID.unique(),
 
-        rowId: ID.unique(),
+      data: {
+        ...patientData,
 
-        data: {
-          ...patientData,
-
-          identificationDocumentId,
-        },
-      });
+        identificationDocumentId,
+      },
+    });
 
     return NextResponse.json(
       newPatient,
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     console.error(
       "Error creating patient:",
-      error
+      error,
     );
 
     return NextResponse.json(
       {
-        error:
-          "Error creating patient",
+        error: "Error creating patient",
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -188,62 +166,52 @@ export async function POST(
  * the supplied application user.
  */
 export async function GET(
-  req: NextRequest
+  req: NextRequest,
 ) {
   try {
-    const userId =
-      req.nextUrl.searchParams.get(
-        "userId"
-      );
+    const userId = req.nextUrl.searchParams.get(
+      "userId",
+    );
 
     if (!userId) {
       return NextResponse.json(
         {
-          error:
-            "userId is required",
+          error: "userId is required",
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
-    const { tablesDB } =
-      await getAppwrite();
-
-    const patients =
-      await tablesDB.listRows({
-        databaseId:
-          APPWRITE.DATABASE_ID,
-
-        tableId:
-          APPWRITE.TABLES.PATIENTS,
-
-        queries: [
-          Query.equal(
-            "userId",
-            [userId]
-          ),
-        ],
-      });
+    const { tablesDB, databaseId } = await getAppwrite();
+    const patients = await tablesDB.listRows({
+      databaseId,
+      tableId: APPWRITE.TABLES.PATIENTS,
+      queries: [
+        Query.equal(
+          "userId",
+          [userId],
+        ),
+      ],
+    });
 
     return NextResponse.json(
-      patients.rows[0] ?? null
+      patients.rows[0] ?? null,
     );
   } catch (error) {
     console.error(
       "Error getting patient:",
-      error
+      error,
     );
 
     return NextResponse.json(
       {
-        error:
-          "Error getting patient",
+        error: "Error getting patient",
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -260,8 +228,7 @@ function buildDocumentUrl({
   projectId: string;
   fileId: string;
 }) {
-  const bucketId =
-    APPWRITE.BUCKETS.PATIENT_DOCUMENTS;
+  const bucketId = APPWRITE.BUCKETS.PATIENT_DOCUMENTS;
 
   return (
     `${endpoint}/storage/buckets/` +
